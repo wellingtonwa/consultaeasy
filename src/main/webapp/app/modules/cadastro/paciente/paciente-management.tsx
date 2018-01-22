@@ -6,7 +6,7 @@ import { Translate, ICrudGetAction, TextFormat } from 'react-jhipster';
 import { FaPlus, FaEye, FaPencil, FaTrash } from 'react-icons/lib/fa';
 
 import { getPacientes } from '../../../reducers/paciente-management';
-import { APP_DATE_FORMAT } from '../../../config/constants';
+import { APP_DATE_FORMAT, APP_ONLY_DATE_FORMAT } from '../../../config/constants';
 
 export interface IPacienteManagementProps {
   getPacientes: ICrudGetAction;
@@ -61,7 +61,7 @@ export class PacienteManagement extends React.Component<IPacienteManagementProps
                     </Button>
                   </td>
                   <td>{paciente.nomeCompleto}</td>
-                  <td><td><TextFormat value={paciente.dataNascimento} type="date" format={APP_DATE_FORMAT} blankOnInvalid /></td></td>
+                  <td><td><TextFormat value={paciente.dataNascimento} type="date" format={APP_ONLY_DATE_FORMAT} blankOnInvalid /></td></td>
                   <td><TextFormat value={paciente.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /></td>
                   <td>{paciente.lastModifiedBy}</td>
                   <td><TextFormat value={paciente.lastModifiedDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /></td>

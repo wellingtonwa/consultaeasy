@@ -9,6 +9,7 @@ const Routes = ({match}) => (
         <Switch>
             <Route exact path={match.url} component={PacienteManagement}/>
             <ModalRoute exact path={`${match.url}/new`} component={PacienteManagementDialog}/>
+            <ModalRoute exact path={`${match.url}/:id/edit`} component={PacienteManagementDialog}/>
         </Switch>
     </div>
 );

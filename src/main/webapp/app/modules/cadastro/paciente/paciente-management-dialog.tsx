@@ -36,7 +36,7 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
   componentDidMount() {
     !this.state.isNew && this.props.getPaciente(this.props.match.params.id);
   }
-  
+
   savePaciente = (event, errors, values) => {
     if (this.state.isNew) {
       this.props.createPaciente(values);

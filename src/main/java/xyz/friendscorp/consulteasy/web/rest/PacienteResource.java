@@ -1,10 +1,17 @@
 package xyz.friendscorp.consulteasy.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+
+import io.github.jhipster.web.util.ResponseUtil;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
+
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,7 +20,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +46,7 @@ public class PacienteResource {
         this.pacienteService = pacienteService;
         this.pacienteRepository = pacienteRepository;
     }
-    
+
     @GetMapping(path = "/paciente")
     @Timed
     public ResponseEntity<List<PacienteDTO>> getAllPacientes(Pageable pageable){
@@ -45,12 +54,12 @@ public class PacienteResource {
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/paciente");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
-    
+
     @PostMapping(path = "/paciente")
     @Timed
     public ResponseEntity<Paciente> createPaciente(@Valid @RequestBody PacienteDTO pacienteDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", pacienteDTO);
-        
+
         if(pacienteDTO.getId()!=null){
             throw new BadRequestAlertException("Um novo paciente não pode ter um ID", "pacienteResource", "idexists");
         } else if(pacienteRepository.findByNomeCompleto(pacienteDTO.getNomeCompleto().toLowerCase()).isPresent()) {
@@ -60,5 +69,21 @@ public class PacienteResource {
         return ResponseEntity.created(new URI("/api/paciente/"+novoPaciente.getId()))
                 .headers(HeaderUtil.createAlert("pacienteManagement.created", novoPaciente.getId().toString()))
                 .body(novoPaciente);
+    }
+
+    @GetMapping(path = "/paciente/{paciente}")
+    public ResponseEntity<PacienteDTO> getPaciente(@PathVariable Paciente paciente){
+        return new ResponseEntity(pacienteService.getPaciente(paciente.getId()), HttpStatus.OK);
+    }
+
+    @PutMapping("/paciente")
+    @Timed
+    public ResponseEntity<PacienteDTO> updateUser(@Valid @RequestBody PacienteDTO pacienteDTO) {
+        log.debug("REST request to update User : {}", pacienteDTO);
+
+        Optional<PacienteDTO> updatedAluno = pacienteService.updatePaciente(pacienteDTO);
+
+        return ResponseUtil.wrapOrNotFound(updatedAluno,
+            HeaderUtil.createAlert("alunoManagement.updated", pacienteDTO.getId().toString()));
     }
 }

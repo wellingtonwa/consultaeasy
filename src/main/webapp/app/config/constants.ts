@@ -12,3 +12,4 @@ export const messages = {
 };
 
 export const APP_DATE_FORMAT = 'DD/MM/YY HH:mm';
+export const APP_ONLY_DATE_FORMAT = 'DD/MM/YYYY';
