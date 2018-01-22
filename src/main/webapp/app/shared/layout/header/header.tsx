@@ -105,11 +105,20 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                 <UncontrolledNavDropdown key="entities">
                   <DropdownToggle nav caret className="d-flex align-items-center">
                     <FaThList />
+                    <span>Cadastros</span>
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem tag={Link} to="/cadastro/paciente">
+                      Pacientes
+                    </DropdownItem>
+                  </DropdownMenu>
+                  {/* <DropdownToggle nav caret className="d-flex align-items-center">
+                    <FaThList />
                     <span>Entities</span>
                   </DropdownToggle>
                   <DropdownMenu right>
                     {entityMenuItems}
-                  </DropdownMenu>
+                  </DropdownMenu> */}
                 </UncontrolledNavDropdown>,
                 <UncontrolledNavDropdown key="admin">
                   <DropdownToggle nav caret className="d-flex align-items-center">

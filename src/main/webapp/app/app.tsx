@@ -33,6 +33,7 @@ export class App extends React.Component<IAppProps, {}> {
 
   render() {
     const paddingTop = '60px';
+    this.props.setLocale('pt-br');
     return (
       <Router>
         <div className="app-container" style={{ paddingTop }}>

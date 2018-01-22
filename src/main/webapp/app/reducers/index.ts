@@ -6,6 +6,7 @@ import layout from './layout';
 import authentication from './authentication';
 import administration from './administration';
 import userManagement from './user-management';
+import pacienteManagement from './paciente-management';
 
 export default combineReducers({
   authentication,
@@ -13,5 +14,6 @@ export default combineReducers({
   layout,
   administration,
   userManagement,
-  loadingBar
+  loadingBar,
+  pacienteManagement
 });

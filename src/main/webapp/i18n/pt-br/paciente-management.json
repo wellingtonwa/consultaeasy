@@ -1,0 +1,29 @@
+{
+    "pacienteManagement": {
+        "home": {
+            "title": "Pacientes",
+            "createLabel": "Adicionar",
+             "createOrEditLabel": "Criar ou editar paciente"
+        },
+        "created": "Novo paciente foi criado com a identificação {{ param }}",
+        "updated": "Paciente com a identificação {{ param }} foi atualizado ",
+        "deleted": "Paciente com a identificação {{ param }} foi removido",
+        "delete": {
+            "question": "Você tem certeza que deseja excluir o paciente {{ nome }}?"
+        },
+        "detail": {
+            "title": "Paciente"
+        },
+        "nomeCompleto": "Nome Completo",
+        "dataNascimento": "Dt. de Nascimento",
+        "email": "Email",
+        "activated": "Ativo",
+        "deactivated": "Inativo",
+        "profiles": "Perfis",
+        "langKey": "Idioma",
+        "createdBy": "Criado por",
+        "createdDate": "Criado em",
+        "lastModifiedBy": "Alterado por",
+        "lastModifiedDate": "Alterado em"
+    }
+}
