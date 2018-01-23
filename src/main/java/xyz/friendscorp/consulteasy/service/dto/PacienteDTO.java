@@ -1,13 +1,20 @@
 package xyz.friendscorp.consulteasy.service.dto;
 
 
+import java.time.Instant;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import xyz.friendscorp.consulteasy.domain.Paciente;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class PacienteDTO {
 
     private Long id;
@@ -15,7 +22,11 @@ public class PacienteDTO {
     private String cpf;
     @DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE)
     private LocalDate dataNascimento;
-
+    private String createdBy;
+    private Instant createdDate;
+    private String lastModifiedBy;
+    private Instant lastModifiedDate;
+    
     public PacienteDTO() {
     }
 
@@ -24,13 +35,6 @@ public class PacienteDTO {
         this.nomeCompleto = p.getNomeCompleto();
         this.cpf = p.getCpf();
         this.dataNascimento = p.getDataNascimento().atZone(ZoneId.systemDefault()).toLocalDate();
-    }
-
-    public PacienteDTO(Long id, String nomeCompleto, String cpf, LocalDate dataNascimento) {
-        this.id = id;
-        this.nomeCompleto = nomeCompleto;
-        this.cpf = cpf;
-        this.dataNascimento = dataNascimento;
     }
 
     public Long getId() {

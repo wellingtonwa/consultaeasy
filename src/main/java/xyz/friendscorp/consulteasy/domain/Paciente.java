@@ -2,7 +2,8 @@ package xyz.friendscorp.consulteasy.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.time.ZoneId;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,9 +11,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
+
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Paciente extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1l;
@@ -37,61 +45,14 @@ public class Paciente extends AbstractAuditingEntity implements Serializable {
         this.dataNascimento = dataNascimento;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNomeCompleto() {
-        return nomeCompleto;
-    }
-
-    public void setNomeCompleto(String nomeCompleto) {
-        this.nomeCompleto = nomeCompleto;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public Instant getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(Instant dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento.atStartOfDay(ZoneId.systemDefault()).toInstant();
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.nomeCompleto);
-        return hash;
+    public String toString() {
+        return "Paciente{" + "id=" + id + ", nomeCompleto=" + nomeCompleto + ", cpf=" + cpf + ", dataNascimento=" + dataNascimento + ", createBy=" + this.getCreatedBy() + '}';
     }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Paciente other = (Paciente) obj;
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return true;
-    }
+    
     
 }

@@ -39,7 +39,7 @@ public class PacienteService {
     public Optional<PacienteDTO> updatePaciente(PacienteDTO pacienteDTO) {
         return Optional.of(pacienteRepository.getOne(pacienteDTO.getId()))
             .map(paciente -> {
-                paciente.setNome(pacienteDTO.getNome());
+                paciente.setNomeCompleto(pacienteDTO.getNomeCompleto());
                 paciente.setDataNascimento(pacienteDTO.getDataNascimento());
                 return paciente;
             })
