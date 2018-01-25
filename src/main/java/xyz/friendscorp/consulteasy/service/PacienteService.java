@@ -17,19 +17,21 @@ import xyz.friendscorp.consulteasy.service.dto.PacienteDTO;
 public class PacienteService {
 
     private PacienteRepository pacienteRepository;
+    private UserService userService;
 
-    public PacienteService(PacienteRepository pacienteRepository) {
+    public PacienteService(PacienteRepository pacienteRepository, UserService userService) {
         this.pacienteRepository = pacienteRepository;
+        this.userService = userService;
     }
 
     public Paciente createPaciente(PacienteDTO pacienteDto){
-        Paciente paciente = new Paciente(null, pacienteDto.getNomeCompleto(), pacienteDto.getCpf(), pacienteDto.getDataNascimento().atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Paciente paciente = new Paciente(null, pacienteDto.getNomeCompleto(), pacienteDto.getCpf(), pacienteDto.getDataNascimento().atStartOfDay(ZoneId.systemDefault()).toInstant(), userService.getUserWithAuthorities().get());
         paciente = pacienteRepository.save(paciente);
         return paciente;
     }
 
     public Page<PacienteDTO> getAllPacientes(Pageable pageable){
-        return pacienteRepository.findAll(pageable).map(PacienteDTO::new);
+        return pacienteRepository.findAllByUser(pageable).map(PacienteDTO::new);
     }
 
     public PacienteDTO getPaciente(Long id){
@@ -45,4 +47,9 @@ public class PacienteService {
             })
             .map(PacienteDTO::new);
     }
+    
+    public void method() {
+        
+    }
+    
 }

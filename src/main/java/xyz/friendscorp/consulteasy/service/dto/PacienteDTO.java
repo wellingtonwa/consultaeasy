@@ -7,13 +7,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 import xyz.friendscorp.consulteasy.domain.Paciente;
 
-@Getter
-@Setter
 @AllArgsConstructor
 public class PacienteDTO {
 
@@ -35,6 +31,22 @@ public class PacienteDTO {
         this.nomeCompleto = p.getNomeCompleto();
         this.cpf = p.getCpf();
         this.dataNascimento = p.getDataNascimento().atZone(ZoneId.systemDefault()).toLocalDate();
+        this.createdBy = p.getCreatedBy();
+        this.createdDate = p.getCreatedDate();
+        this.lastModifiedBy = p.getLastModifiedBy();
+        this.lastModifiedDate = p.getLastModifiedDate();
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+    
+    public Instant getDataNascimentoInstant() {
+        return dataNascimento.atStartOfDay(ZoneId.systemDefault()).toInstant();
     }
 
     public Long getId() {
@@ -61,14 +73,42 @@ public class PacienteDTO {
         this.cpf = cpf;
     }
 
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
-    
+    public Instant getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    @Override
+    public String toString() {
+        return "PacienteDTO{" + "id=" + id + ", nomeCompleto=" + nomeCompleto + ", cpf=" + cpf + ", dataNascimento=" + dataNascimento + ", createdBy=" + createdBy + ", createdDate=" + createdDate + ", lastModifiedBy=" + lastModifiedBy + ", lastModifiedDate=" + lastModifiedDate + '}';
+    }
+
     
 }

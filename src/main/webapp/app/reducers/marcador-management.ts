@@ -6,18 +6,18 @@ import { messages } from '../config/constants';
 import { request } from 'https';
 
 export const ACTION_TYPES = {
-  FETCH_PACIENTES: 'pacienteManagement/FETCH_PACIENTES',
-  FETCH_PACIENTE:  'pacienteManagement/FETCH_PACIENTE',
-  CREATE_PACIENTE: 'pacienteManagement/CREATE_PACIENTE',
-  UPDATE_PACIENTE: 'pacienteManagement/UPDATE_PACIENTE',
-  DELETE_PACIENTE: 'pacienteManagement/DELETE_PACIENTE'
+  FETCH_MARCADORES: 'marcadorManagement/FETCH_MARCADORES',
+  FETCH_MARCADOR:  'marcadorManagement/FETCH_MARCADOR',
+  CREATE_MARCADOR: 'marcadorManagement/CREATE_MARCADOR',
+  UPDATE_MARCADOR: 'marcadorManagement/UPDATE_MARCADOR',
+  DELETE_MARCADOR: 'marcadorManagement/DELETE_MARCADOR'
 };
 
 const initialState = {
   loading: false,
   errorMessage: null,
-  pacientes: [],
-  paciente: {},
+  marcadores: [],
+  marcador: {},
   updating: false,
   updateSuccess: false
 };
@@ -25,28 +25,28 @@ const initialState = {
 // Reducer
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REQUEST(ACTION_TYPES.FETCH_PACIENTES):
-    case REQUEST(ACTION_TYPES.FETCH_PACIENTE):
+    case REQUEST(ACTION_TYPES.FETCH_MARCADORES):
+    case REQUEST(ACTION_TYPES.FETCH_MARCADOR):
       return {
         ...state,
         errorMessage: null,
         updateSuccess: false,
         loading: true
       };
-    case REQUEST(ACTION_TYPES.CREATE_PACIENTE):
-    case REQUEST(ACTION_TYPES.UPDATE_PACIENTE):
-    case REQUEST(ACTION_TYPES.DELETE_PACIENTE):
+    case REQUEST(ACTION_TYPES.CREATE_MARCADOR):
+    case REQUEST(ACTION_TYPES.UPDATE_MARCADOR):
+    case REQUEST(ACTION_TYPES.DELETE_MARCADOR):
       return {
         ...state,
         errorMessage: null,
         updateSuccess: false,
         updating: true
       };
-    case FAILURE(ACTION_TYPES.FETCH_PACIENTES):
-    case FAILURE(ACTION_TYPES.FETCH_PACIENTE):
-    case FAILURE(ACTION_TYPES.CREATE_PACIENTE):
-    case FAILURE(ACTION_TYPES.UPDATE_PACIENTE):
-    case FAILURE(ACTION_TYPES.DELETE_PACIENTE):
+    case FAILURE(ACTION_TYPES.FETCH_MARCADORES):
+    case FAILURE(ACTION_TYPES.FETCH_MARCADOR):
+    case FAILURE(ACTION_TYPES.CREATE_MARCADOR):
+    case FAILURE(ACTION_TYPES.UPDATE_MARCADOR):
+    case FAILURE(ACTION_TYPES.DELETE_MARCADOR):
       return {
         ...state,
         loading: false,
@@ -54,89 +54,89 @@ export default (state = initialState, action) => {
         updateSuccess: false,
         errorMessage: action.payload
       };
-    case SUCCESS(ACTION_TYPES.FETCH_PACIENTES):
+    case SUCCESS(ACTION_TYPES.FETCH_MARCADORES):
       return {
         ...state,
         loading: false,
-        pacientes: action.payload.data
+        marcadores: action.payload.data
       };
-    case SUCCESS(ACTION_TYPES.FETCH_PACIENTE):
+    case SUCCESS(ACTION_TYPES.FETCH_MARCADOR):
       return {
         ...state,
         loading: false,
-        paciente: action.payload.data
+        marcador: action.payload.data
       };
-    case SUCCESS(ACTION_TYPES.CREATE_PACIENTE):
-    case SUCCESS(ACTION_TYPES.UPDATE_PACIENTE):
+    case SUCCESS(ACTION_TYPES.CREATE_MARCADOR):
+    case SUCCESS(ACTION_TYPES.UPDATE_MARCADOR):
       return {
         ...state,
         updating: false,
         updateSuccess: true,
-        paciente: action.payload.data
+        marcador: action.payload.data
       };
-    case SUCCESS(ACTION_TYPES.DELETE_PACIENTE):
+    case SUCCESS(ACTION_TYPES.DELETE_MARCADOR):
       return {
         ...state,
         updating: false,
         updateSuccess: true,
-        paciente: {}
+        marcador: {}
       };
     default:
       return state;
   }
 };
 
-const apiUrl = '/api/paciente';
+const apiUrl = '/api/marcador';
 // Actions
-export const getPacientes: ICrudGetAction = (page, size, sort) => ({
-  type: ACTION_TYPES.FETCH_PACIENTES,
+export const getMarcadores: ICrudGetAction = (page, size, sort) => ({
+  type: ACTION_TYPES.FETCH_MARCADORES,
   payload: axios.get(`${apiUrl}?cacheBuster=${new Date().getTime()}`)
 });
 
 export const getPaciente: ICrudGetAction = id => {
   const requestUrl = `${apiUrl}/${id}`;
   return {
-    type: ACTION_TYPES.FETCH_PACIENTE,
+    type: ACTION_TYPES.FETCH_MARCADOR,
     payload: axios.get(requestUrl)
   };
 };
 
-export const createPaciente: ICrudPutAction = paciente => async dispatch => {
+export const createMarcador: ICrudPutAction = marcador => async dispatch => {
   const result = await dispatch({
-    type: ACTION_TYPES.CREATE_PACIENTE,
+    type: ACTION_TYPES.CREATE_MARCADOR,
     meta: {
       successMessage: messages.DATA_CREATE_SUCCESS_ALERT,
       errorMessage: messages.DATA_UPDATE_ERROR_ALERT
     },
-    payload: axios.post(apiUrl, paciente)
+    payload: axios.post(apiUrl, marcador)
   });
-  dispatch(getPacientes());
+  dispatch(getMarcadores());
   return result;
 };
 
-export const updatePaciente: ICrudPutAction = paciente => async dispatch => {
+export const updateMarcador: ICrudPutAction = marcador => async dispatch => {
   const result = await dispatch({
-    type: ACTION_TYPES.UPDATE_PACIENTE,
+    type: ACTION_TYPES.UPDATE_MARCADOR,
     meta: {
       successMessage: messages.DATA_CREATE_SUCCESS_ALERT,
       errorMessage: messages.DATA_UPDATE_ERROR_ALERT
     },
-    payload: axios.put(apiUrl, paciente)
+    payload: axios.put(apiUrl, marcador)
   });
-  dispatch(getPacientes());
+  dispatch(getMarcadores());
   return result;
 };
 
-export const deletePaciente: ICrudDeleteAction = id => async dispatch => {
+export const deleteMarcador: ICrudDeleteAction = id => async dispatch => {
   const requestUrl = `${apiUrl}/${id}`;
   const result = await dispatch({
-    type: ACTION_TYPES.DELETE_PACIENTE,
+    type: ACTION_TYPES.DELETE_MARCADOR,
     meta: {
       successMessage: messages.DATA_DELETE_SUCCESS_ALERT,
       errorMessage: messages.DATA_UPDATE_ERROR_ALERT
     },
     payload: axios.delete(requestUrl)
   });
-  dispatch(getPacientes());
+  dispatch(getMarcadores());
   return result;
 };

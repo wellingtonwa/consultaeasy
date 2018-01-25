@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,7 +76,7 @@ public class PacienteResource {
         return new ResponseEntity(pacienteService.getPaciente(paciente.getId()), HttpStatus.OK);
     }
 
-    @PutMapping("/paciente")
+    @PutMapping(path = "/paciente")
     @Timed
     public ResponseEntity<PacienteDTO> updateUser(@Valid @RequestBody PacienteDTO pacienteDTO) {
         log.debug("REST request to update User : {}", pacienteDTO);
@@ -86,4 +86,13 @@ public class PacienteResource {
         return ResponseUtil.wrapOrNotFound(updatedAluno,
             HeaderUtil.createAlert("alunoManagement.updated", pacienteDTO.getId().toString()));
     }
+    
+    @DeleteMapping(path = "/paciente/{id}")
+    @Timed
+    public ResponseEntity<Void> deletePaciente(@PathVariable Long id) {
+        log.debug("REST request to delete Paciente: {}", id);
+        pacienteRepository.deleteById(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", id.toString())).build();
+    }
+    
 }

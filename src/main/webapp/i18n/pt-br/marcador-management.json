@@ -1,0 +1,24 @@
+{
+    "marcadorManagement": {
+        "home": {
+            "title": "Marcadores",
+            "createLabel": "Adicionar",
+            "createOrEditLabel": "Criar ou editar marcador"
+        },
+        "created": "Novo marcador foi criado com a identificação {{ param }}",
+        "updated": "Marcador com a identificação {{ param }} foi atualizado ",
+        "deleted": "Marcador com a identificação {{ param }} foi removido",
+        "delete": {
+            "question": "Você tem certeza que deseja excluir o marcador {{ nome }}?"
+        },
+        "detail": {
+            "title": "Marcador"
+        },
+        "nome": "Descrição",
+        "cor": "Cor",
+        "createdBy": "Criado por",
+        "createdDate": "Criado em",
+        "lastModifiedBy": "Alterado por",
+        "lastModifiedDate": "Alterado em"
+    }
+}

@@ -1,5 +1,6 @@
 package xyz.friendscorp.consulteasy.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -10,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 
@@ -36,22 +39,23 @@ public class Paciente extends AbstractAuditingEntity implements Serializable {
     @Column(name="data_nascimento")
     private Instant dataNascimento;
     
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "id_user")
+    @JsonBackReference
+    private User user;
+    
     public Paciente(){}
 
-    public Paciente(Long id, String nomeCompleto, String cpf, Instant dataNascimento) {
+    public Paciente(Long id, String nomeCompleto, String cpf, Instant dataNascimento, User user) {
         this.id = id;
         this.nomeCompleto = nomeCompleto;
         this.cpf = cpf;
         this.dataNascimento = dataNascimento;
+        this.user = user;
     }
 
     public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    }
-
-    @Override
-    public String toString() {
-        return "Paciente{" + "id=" + id + ", nomeCompleto=" + nomeCompleto + ", cpf=" + cpf + ", dataNascimento=" + dataNascimento + ", createBy=" + this.getCreatedBy() + '}';
     }
     
     
