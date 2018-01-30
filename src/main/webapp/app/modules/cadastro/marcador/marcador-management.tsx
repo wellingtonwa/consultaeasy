@@ -61,7 +61,7 @@ export class MarcadorManagement extends React.Component<IMarcadorManagementProps
                     </Button>
                   </td>
                   <td>{marcador.nome}</td>
-                  <td>{marcador.cor}</td>
+                  <td><div style={{ height: '30px', width: '30px', backgroundColor: `#${marcador.cor}`, color: `#${marcador.cor}` }}>.</div></td>
                   <td/>
                   <td><TextFormat value={marcador.createdDate} type="date" format={APP_DATE_FORMAT} blankOnInvalid /></td>
                   <td>{marcador.lastModifiedBy}</td>

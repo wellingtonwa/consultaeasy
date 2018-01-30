@@ -189,8 +189,9 @@
     "no-unused-variable": {
       "severity": "error"
     },
+
     "ban-types": [true, ["Object", "Use {} instead."]],
-    "no-submodule-imports": [true, "uuid/v4", "react-icons/lib/fa"],
+    "no-submodule-imports": [true, "uuid/v4", "react-icons/lib/fa", "primereact/resources/themes/omega/theme.css", "primereact/resources/primereact.min.css"],
 
     "ter-arrow-body-style": [true],
     "ter-no-irregular-whitespace": [true],

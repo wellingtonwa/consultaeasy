@@ -4,6 +4,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from 'react
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
+import { ColorPicker } from 'primereact/components/colorpicker/ColorPicker';
 
 import { getMarcador, updateMarcador, createMarcador } from '../../../reducers/marcador-management';
 import { locales } from '../../../config/translation';
@@ -22,6 +23,7 @@ export interface IMarcadorManagementModelProps {
 export interface IMarcadorManagementModelState {
   showModal: boolean;
   isNew: boolean;
+  cor: any;
 }
 export class MarcadorManagementDialog extends React.Component<IMarcadorManagementModelProps, IMarcadorManagementModelState> {
 
@@ -29,7 +31,8 @@ export class MarcadorManagementDialog extends React.Component<IMarcadorManagemen
     super(props);
     this.state = {
       showModal: true,
-      isNew: !this.props.match.params || !this.props.match.params.id
+      isNew: !this.props.match.params || !this.props.match.params.id,
+      cor: !this.props.marcador ? 'FFFFFF' : this.props.marcador.cor
     };
   }
 
@@ -37,7 +40,13 @@ export class MarcadorManagementDialog extends React.Component<IMarcadorManagemen
     !this.state.isNew && this.props.getMarcador(this.props.match.params.id);
   }
 
+  componentWillReceiveProps(proximo) {
+
+    this.setState({ cor: proximo.marcador.cor });
+  }
+
   savePaciente = (event, errors, values) => {
+    values.cor = this.state.cor;
     if (this.state.isNew) {
       this.props.createMarcador(values);
     } else {
@@ -51,6 +60,10 @@ export class MarcadorManagementDialog extends React.Component<IMarcadorManagemen
         showModal: false
     });
     this.props.history.push('/cadastro/marcador');
+  }
+
+  colorPickerOnChange = e => {
+    this.setState({ cor: e.value });
   }
 
   render() {
@@ -81,7 +94,8 @@ export class MarcadorManagementDialog extends React.Component<IMarcadorManagemen
             </AvGroup>
             <AvGroup>
               <Label for="cor"><Translate contentKey="marcadorManagement.cor">Cor</Translate></Label>
-              <AvInput type="text" className="form-control" name="cor" />
+              <br/>
+              <ColorPicker format="hex" value={this.state.cor} onChange={this.colorPickerOnChange}/>
             </AvGroup>
           </ModalBody>
           <ModalFooter>

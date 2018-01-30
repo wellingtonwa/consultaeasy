@@ -10,6 +10,8 @@ import { registerLocales } from './config/translation';
 import setupAxiosInterceptors from './config/axios-interceptor';
 import { clearAuthentication } from './reducers/authentication';
 import AppComponent from './app';
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/omega/theme.css';
 
 const devTools = process.env.NODE_ENV === 'development' ? <DevTools /> : null;
 
