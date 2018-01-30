@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { ModalRoute } from 'react-router-modal';
-import PacienteManagement from './paciente-management';
-import PacienteManagementDialog from './paciente-management-dialog';
-import PacienteManagementDeleteDialog from './paciente-management-delete-dialog';
-import PacienteManagementDetail from './paciente-management-detail';
+import MarcadorManagement from './marcador-management';
+import MarcadorManagementDialog from './marcador-management-dialog';
+import MarcadorManagementDeleteDialog from './marcador-management-delete-dialog';
+import MarcadorManagementDetail from './marcador-management-detail';
 
 const Routes = ({ match }) => (
     <div>
         <Switch>
-            <Route exact path={match.url} component={PacienteManagement}/>
-            <ModalRoute exact path={`${match.url}/new`} component={PacienteManagementDialog}/>
-            <ModalRoute exact path={`${match.url}/:id/edit`} component={PacienteManagementDialog}/>
-            <ModalRoute exact path={`${match.url}/:id/delete`} component={PacienteManagementDeleteDialog}/>
-            <Route exact path={`${match.url}/:id`} component={PacienteManagementDetail} />
+            <Route exact path={match.url} component={MarcadorManagement}/>
+            <ModalRoute exact path={`${match.url}/new`} component={MarcadorManagementDialog}/>
+            <ModalRoute exact path={`${match.url}/:id/edit`} component={MarcadorManagementDialog}/>
+            <ModalRoute exact path={`${match.url}/:id/delete`} component={MarcadorManagementDeleteDialog}/>
+            <Route exact path={`${match.url}/:id`} component={MarcadorManagementDetail} />
         </Switch>
     </div>
 );

@@ -9,7 +9,7 @@
         "updated": "Marcador com a identificação {{ param }} foi atualizado ",
         "deleted": "Marcador com a identificação {{ param }} foi removido",
         "delete": {
-            "question": "Você tem certeza que deseja excluir o marcador {{ nome }}?"
+            "question": "Você tem certeza que deseja excluir o marcador '{{ nome }}'?"
         },
         "detail": {
             "title": "Marcador"

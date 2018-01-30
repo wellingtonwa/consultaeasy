@@ -93,7 +93,7 @@ export const getMarcadores: ICrudGetAction = (page, size, sort) => ({
   payload: axios.get(`${apiUrl}?cacheBuster=${new Date().getTime()}`)
 });
 
-export const getPaciente: ICrudGetAction = id => {
+export const getMarcador: ICrudGetAction = id => {
   const requestUrl = `${apiUrl}/${id}`;
   return {
     type: ACTION_TYPES.FETCH_MARCADOR,

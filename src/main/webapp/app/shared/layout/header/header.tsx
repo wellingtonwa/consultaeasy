@@ -111,6 +111,9 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                     <DropdownItem tag={Link} to="/cadastro/paciente">
                       Pacientes
                     </DropdownItem>
+                    <DropdownItem tag={Link} to="/cadastro/marcador">
+                      Marcador
+                    </DropdownItem>
                   </DropdownMenu>
                   {/* <DropdownToggle nav caret className="d-flex align-items-center">
                     <FaThList />
