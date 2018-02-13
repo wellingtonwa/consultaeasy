@@ -8,6 +8,7 @@ import administration from './administration';
 import userManagement from './user-management';
 import pacienteManagement from './paciente-management';
 import marcadorManagement from './marcador-management';
+import contatoManagement from './contato-management';
 
 export default combineReducers({
   authentication,
@@ -17,5 +18,6 @@ export default combineReducers({
   userManagement,
   loadingBar,
   pacienteManagement,
-  marcadorManagement
+  marcadorManagement,
+  contatoManagement
 });

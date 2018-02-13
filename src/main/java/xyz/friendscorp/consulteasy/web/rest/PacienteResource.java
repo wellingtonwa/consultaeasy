@@ -26,9 +26,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import xyz.friendscorp.consulteasy.domain.Contato;
 import xyz.friendscorp.consulteasy.domain.Paciente;
 import xyz.friendscorp.consulteasy.repository.PacienteRepository;
 import xyz.friendscorp.consulteasy.service.PacienteService;
+import xyz.friendscorp.consulteasy.service.dto.ContatoDTO;
 import xyz.friendscorp.consulteasy.service.dto.PacienteDTO;
 import xyz.friendscorp.consulteasy.web.rest.errors.BadRequestAlertException;
 import xyz.friendscorp.consulteasy.web.rest.util.HeaderUtil;
@@ -74,6 +77,23 @@ public class PacienteResource {
     @GetMapping(path = "/paciente/{paciente}")
     public ResponseEntity<PacienteDTO> getPaciente(@PathVariable Paciente paciente){
         return new ResponseEntity(pacienteService.getPaciente(paciente.getId()), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/paciente/{paciente}/contato/{contato}")
+    public ResponseEntity<ContatoDTO> getContato(@PathVariable Paciente paciente, @PathVariable Contato contato){
+        Optional<Contato> optContato = pacienteService.getContato(paciente.getId(), contato.getId());
+        if(optContato.isPresent()){
+            return new ResponseEntity<>(optContato.map(ContatoDTO::new).get(), HttpStatus.OK);
+        } else {
+            throw new BadRequestAlertException("Contato não encontrado!", "pacienteManagement", "contatonotexist");
+        }
+    }
+
+    @GetMapping(path = "/paciente/{paciente}/contato")
+    public ResponseEntity<List<ContatoDTO>> getContatos(@PathVariable Paciente paciente, Pageable pageable){
+        Page<ContatoDTO> page = pacienteService.getContatos(paciente.getId(), pageable).map(ContatoDTO::new);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/paciente/"+paciente.getId().toString()+"/contato");
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     @PutMapping(path = "/paciente")

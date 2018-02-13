@@ -6,20 +6,16 @@ import { messages } from '../config/constants';
 import { request } from 'https';
 
 export const ACTION_TYPES = {
-  FETCH_PACIENTES: 'pacienteManagement/FETCH_PACIENTES',
-  FETCH_PACIENTE:  'pacienteManagement/FETCH_PACIENTE',
   FETCH_CONTATO:  'pacienteManagement/FETCH_CONTATO',
   FETCH_CONTATOS:  'pacienteManagement/FETCH_CONTATOS',
-  CREATE_PACIENTE: 'pacienteManagement/CREATE_PACIENTE',
-  UPDATE_PACIENTE: 'pacienteManagement/UPDATE_PACIENTE',
-  DELETE_PACIENTE: 'pacienteManagement/DELETE_PACIENTE'
+  CREATE_CONTATO: 'pacienteManagement/CREATE_CONTATO',
+  UPDATE_CONTATO: 'pacienteManagement/UPDATE_CONTATO',
+  DELETE_CONTATO: 'pacienteManagement/DELETE_CONTATO'
 };
 
 const initialState = {
   loading: false,
   errorMessage: null,
-  pacientes: [],
-  paciente: {},
   contatos: [],
   contato: {},
   updating: false,
@@ -29,8 +25,6 @@ const initialState = {
 // Reducer
 export default (state = initialState, action) => {
   switch (action.type) {
-    case REQUEST(ACTION_TYPES.FETCH_PACIENTES):
-    case REQUEST(ACTION_TYPES.FETCH_PACIENTE):
     case REQUEST(ACTION_TYPES.FETCH_CONTATOS):
     case REQUEST(ACTION_TYPES.FETCH_CONTATO):
       return {
@@ -39,34 +33,26 @@ export default (state = initialState, action) => {
         updateSuccess: false,
         loading: true
       };
-    case REQUEST(ACTION_TYPES.CREATE_PACIENTE):
-    case REQUEST(ACTION_TYPES.UPDATE_PACIENTE):
-    case REQUEST(ACTION_TYPES.DELETE_PACIENTE):
+    case REQUEST(ACTION_TYPES.CREATE_CONTATO):
+    case REQUEST(ACTION_TYPES.UPDATE_CONTATO):
+    case REQUEST(ACTION_TYPES.DELETE_CONTATO):
       return {
         ...state,
         errorMessage: null,
         updateSuccess: false,
         updating: true
       };
-    case FAILURE(ACTION_TYPES.FETCH_PACIENTES):
-    case FAILURE(ACTION_TYPES.FETCH_PACIENTE):
     case FAILURE(ACTION_TYPES.FETCH_CONTATOS):
     case FAILURE(ACTION_TYPES.FETCH_CONTATO):
-    case FAILURE(ACTION_TYPES.CREATE_PACIENTE):
-    case FAILURE(ACTION_TYPES.UPDATE_PACIENTE):
-    case FAILURE(ACTION_TYPES.DELETE_PACIENTE):
+    case FAILURE(ACTION_TYPES.CREATE_CONTATO):
+    case FAILURE(ACTION_TYPES.UPDATE_CONTATO):
+    case FAILURE(ACTION_TYPES.DELETE_CONTATO):
       return {
         ...state,
         loading: false,
         updating: false,
         updateSuccess: false,
         errorMessage: action.payload
-      };
-    case SUCCESS(ACTION_TYPES.FETCH_PACIENTES):
-      return {
-        ...state,
-        loading: false,
-        pacientes: action.payload.data
       };
     case SUCCESS(ACTION_TYPES.FETCH_CONTATOS):
       return {
@@ -80,96 +66,73 @@ export default (state = initialState, action) => {
         loading: false,
         contatos: action.payload.data
       };
-    case SUCCESS(ACTION_TYPES.FETCH_PACIENTE):
-      return {
-        ...state,
-        loading: false,
-        paciente: action.payload.data
-      };
-    case SUCCESS(ACTION_TYPES.CREATE_PACIENTE):
-    case SUCCESS(ACTION_TYPES.UPDATE_PACIENTE):
+    case SUCCESS(ACTION_TYPES.CREATE_CONTATO):
+    case SUCCESS(ACTION_TYPES.UPDATE_CONTATO):
       return {
         ...state,
         updating: false,
-        updateSuccess: true,
         paciente: action.payload.data
       };
-    case SUCCESS(ACTION_TYPES.DELETE_PACIENTE):
+    case SUCCESS(ACTION_TYPES.DELETE_CONTATO):
       return {
         ...state,
         updating: false,
-        updateSuccess: true,
         paciente: {}
       };
     default:
       return state;
   }
 };
-
-const apiUrl = '/api/paciente';
+const apiUrl = '/api/contato';
 // Actions
-export const getPacientes: ICrudGetAction = (page, size, sort) => ({
-  type: ACTION_TYPES.FETCH_PACIENTES,
-  payload: axios.get(`${apiUrl}?cacheBuster=${new Date().getTime()}`)
-});
-
-export const getContatos: ICrudGetAction = (idPaciente, page, size, sort) => ({
+export const getContatos: ICrudGetAction = idPaciente => ({
   type: ACTION_TYPES.FETCH_CONTATOS,
-  payload: axios.get(`${apiUrl}/${idPaciente}/contato?cacheBuster=${new Date().getTime()}`)
+  payload: axios.get(`${apiUrl}/paciente/${idPaciente}`)
 });
 
-export const getContato: ICrudGetAction = (id, idContato) => {
-  const requestUrl = `${apiUrl}/${id}/contato/${idContato}`;
+export const getContato: ICrudGetAction = idContato => {
+  const requestUrl = `${apiUrl}/${idContato}`;
   return {
     type: ACTION_TYPES.FETCH_CONTATO,
     payload: axios.get(requestUrl)
   };
 };
 
-export const getPaciente: ICrudGetAction = id => {
-  const requestUrl = `${apiUrl}/${id}`;
-  return {
-    type: ACTION_TYPES.FETCH_PACIENTE,
-    payload: axios.get(requestUrl)
-  };
-};
-
-export const createPaciente: ICrudPutAction = paciente => async dispatch => {
+export const createContato: ICrudPutAction = (idPaciente, contato) => async dispatch => {
   const result = await dispatch({
-    type: ACTION_TYPES.CREATE_PACIENTE,
+    type: ACTION_TYPES.CREATE_CONTATO,
     meta: {
       successMessage: messages.DATA_CREATE_SUCCESS_ALERT,
       errorMessage: messages.DATA_UPDATE_ERROR_ALERT
     },
-    payload: axios.post(apiUrl, paciente)
+    payload: axios.post(`${apiUrl}/${idPaciente}`, contato)
   });
-  dispatch(getPacientes());
+  dispatch(getContatos());
   return result;
 };
-
-export const updatePaciente: ICrudPutAction = paciente => async dispatch => {
+export const updateContato: ICrudPutAction = (idContato, contato) => async dispatch => {
   const result = await dispatch({
-    type: ACTION_TYPES.UPDATE_PACIENTE,
+    type: ACTION_TYPES.UPDATE_CONTATO,
     meta: {
       successMessage: messages.DATA_CREATE_SUCCESS_ALERT,
       errorMessage: messages.DATA_UPDATE_ERROR_ALERT
     },
-    payload: axios.put(apiUrl, paciente)
+    payload: axios.put(`${apiUrl}/${idContato}`, contato)
   });
-  dispatch(getPacientes());
+  dispatch(getContatos());
   return result;
 };
 
-export const deletePaciente: ICrudDeleteAction = id => async dispatch => {
+export const deleteContato: ICrudDeleteAction = id => async dispatch => {
   const requestUrl = `${apiUrl}/${id}`;
   const result = await dispatch({
-    type: ACTION_TYPES.DELETE_PACIENTE,
+    type: ACTION_TYPES.DELETE_CONTATO,
     meta: {
       successMessage: messages.DATA_DELETE_SUCCESS_ALERT,
       errorMessage: messages.DATA_UPDATE_ERROR_ALERT
     },
     payload: axios.delete(requestUrl)
   });
-  dispatch(getPacientes());
+  dispatch(getContatos());
   return result;
 };

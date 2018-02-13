@@ -1,40 +1,58 @@
 import * as React from 'react';
+import { PubSub } from 'pubsub-js';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from 'reactstrap';
+import { Button, Label, Table } from 'reactstrap';
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
+import contatoManagement from './contato/contato-management-dialog';
+import { v4 } from 'uuid';
 
+import ListaContato from './lista-contato';
 import { getPaciente, updatePaciente, createPaciente } from '../../../reducers/paciente-management';
+import { getContatos } from '../../../reducers/contato-management';
 import { locales } from '../../../config/translation';
+import { Link } from 'react-router-dom';
+import ContatoManagementDialog from './paciente-management-add-contato';
 
 export interface IPacienteManagementModelProps {
   getPaciente: ICrudGetAction;
+  getContatos: ICrudGetAction;
   updatePaciente: ICrudPutAction;
   createPaciente: ICrudPutAction;
   loading: boolean;
   updating: boolean;
   paciente: any;
+  contatos: any[];
+  contato: any;
   match: any;
   history: any;
 }
 
 export interface IPacienteManagementModelState {
   showModal: boolean;
+  showCadastroContrato: boolean;
   isNew: boolean;
+  contatos: any[];
 }
+
 export class PacienteManagementDialog extends React.Component<IPacienteManagementModelProps, IPacienteManagementModelState> {
 
   constructor(props) {
     super(props);
     this.state = {
       showModal: true,
-      isNew: !this.props.match.params || !this.props.match.params.id
+      isNew: !this.props.match.params || !this.props.match.params.id,
+      showCadastroContrato: false,
+      contatos: this.props.contatos
     };
+    console.log(v4());
+    PubSub.subscribe('paciente-atualizar-contatos', this.saveContato);
   }
 
   componentDidMount() {
     !this.state.isNew && this.props.getPaciente(this.props.match.params.id);
+    !this.state.isNew && this.props.getContatos(this.props.match.params.id);
   }
 
   savePaciente = (event, errors, values) => {
@@ -48,28 +66,42 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
 
   handleClose = () => {
     this.setState({
-        showModal: false
+      showModal: false
     });
     this.props.history.push('/cadastro/paciente');
   }
 
+  addContato = () => {
+    const novoContato = { uuid: v4(), tipoContato: 'TELEFONE', codigoArea: '32' };
+    PubSub.publish('contato-showmodal', novoContato);
+  }
+
+  saveContato = (msg, auxContato) => {
+    const contatos = this.state.contatos;
+    contatos.push(auxContato);
+    let indice = -1;
+    contatos.map((item, index) => item.uuid === auxContato.uuid ? indice = index : null);
+    if (indice >= 0) {
+      contatos[indice] = auxContato;
+    }
+    this.setState({ contatos });
+  }
+
   render() {
     const isInvalid = false;
-    const { paciente, loading, updating } = this.props;
-    const { showModal, isNew } = this.state;
+    const { paciente, loading, updating, match, contato } = this.props;
+    const { showModal, isNew, contatos } = this.state;
     return (
-      <Modal
-        isOpen={showModal} modalTransition={{ timeout: 20 }} backdropTransition={{ timeout: 10 }}
-        toggle={this.handleClose} size="lg"
-      >
-      <ModalHeader toggle={this.handleClose}><Translate contentKey="pacienteManagement.home.createOrEditLabel">Create or edit a User</Translate></ModalHeader>
-      { loading ? <p>Loading...</p>
-      : <AvForm model={isNew ? {} : paciente} onSubmit={this.savePaciente} >
-          <ModalBody>
-            { paciente.id ?
+      <div>
+        <h2>
+          <Translate contentKey="pacienteManagement.home.createOrEditLabel">Create or edit a User</Translate>
+        </h2>
+        {loading ? <p>Loading...</p>
+          : <AvForm model={isNew ? {} : paciente} onSubmit={this.savePaciente} >
+            {paciente.id ?
               <AvGroup>
                 <Label for="id"><Translate contentKey="global.field.id">ID</Translate></Label>
-                <AvInput type="text" className="form-control" name="id" required readOnly/>
+                <AvInput type="text" className="form-control" name="id" required readOnly />
               </AvGroup>
               : null
             }
@@ -83,30 +115,41 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
               <Label for="dataNascimento"><Translate contentKey="pacienteManagement.dataNascimento">First Name</Translate></Label>
               <AvInput type="date" className="form-control" name="dataNascimento" />
             </AvGroup>
-          </ModalBody>
-          <ModalFooter>
+            <h3>Contato(s)
+                <Button onClick={this.addContato}>
+                Add Contato
+                </Button>
+            </h3>
+            <ListaContato contatos={contatos} />
+            <ContatoManagementDialog loading={loading} updating={updating}
+              match={match} contato={contato} showModal={showModal} />
             <Button color="secondary" onClick={this.handleClose}>
-              <FaBan/>&nbsp;
-              <Translate contentKey="entity.action.cancel">Cancel</Translate>
+              <FaBan />&nbsp;
+                <Translate contentKey="entity.action.cancel">Cancel</Translate>
             </Button>
             <Button color="primary" type="submit" disabled={isInvalid || updating}>
-              <FaFloppyO/>&nbsp;
-              <Translate contentKey="entity.action.save">Save</Translate>
+              <FaFloppyO />&nbsp;
+                <Translate contentKey="entity.action.save">Save</Translate>
             </Button>
-          </ModalFooter>
-        </AvForm>
-      }
-    </Modal>
+          </AvForm>
+        }
+      </div>
     );
   }
 }
 
 const mapStateToProps = storeState => ({
   paciente: storeState.pacienteManagement.paciente,
+  contatos: storeState.contatoManagement.contatos,
   loading: storeState.pacienteManagement.loading,
   updating: storeState.pacienteManagement.updating
 });
 
-const mapDispatchToProps = { getPaciente, updatePaciente, createPaciente };
+const mapDispatchToProps = {
+  getPaciente,
+  updatePaciente,
+  createPaciente,
+  getContatos
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PacienteManagementDialog);

@@ -8,7 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import xyz.friendscorp.consulteasy.domain.Contato;
 import xyz.friendscorp.consulteasy.domain.Paciente;
+import xyz.friendscorp.consulteasy.repository.ContatoRepository;
 import xyz.friendscorp.consulteasy.repository.PacienteRepository;
 import xyz.friendscorp.consulteasy.service.dto.PacienteDTO;
 
@@ -17,6 +19,7 @@ import xyz.friendscorp.consulteasy.service.dto.PacienteDTO;
 public class PacienteService {
 
     private PacienteRepository pacienteRepository;
+    private ContatoRepository contatoRepository;
     private UserService userService;
 
     public PacienteService(PacienteRepository pacienteRepository, UserService userService) {
@@ -34,6 +37,7 @@ public class PacienteService {
         return pacienteRepository.findAllByUser(pageable).map(PacienteDTO::new);
     }
 
+    @Transactional
     public PacienteDTO getPaciente(Long id){
         return new PacienteDTO(pacienteRepository.getOne(id));
     }
@@ -48,8 +52,12 @@ public class PacienteService {
             .map(PacienteDTO::new);
     }
     
-    public void method() {
-        
+    public Page<Contato> getContatos(Long idPaciente, Pageable pageable) {
+        return contatoRepository.getContatosByIdPaciente(idPaciente, pageable);
+    }
+    
+    public Optional<Contato> getContato(Long idContato, Long idPaciente) {
+        return contatoRepository.getContato(idContato, idPaciente);
     }
     
 }

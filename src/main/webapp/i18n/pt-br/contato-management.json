@@ -1,0 +1,25 @@
+{
+    "contatoManagement": {
+        "home": {
+            "title": "Contatos",
+            "createLabel": "Adicionar",
+            "createOrEditLabel": "Criar ou editar contato"
+        },
+        "created": "Novo contato foi criado com a identificação {{ param }}",
+        "updated": "Contato com a identificação {{ param }} foi atualizado ",
+        "deleted": "Contato com a identificação {{ param }} foi removido",
+        "delete": {
+            "question": "Você tem certeza que deseja excluir o contato '{{ contato }}'?"
+        },
+        "detail": {
+            "title": "Contato"
+        },
+        "tipoContato": "Tipo de Contato",
+        "codigoArea": "Código de Área",
+        "contato": "Contato",
+        "createdBy": "Criado por",
+        "createdDate": "Criado em",
+        "lastModifiedBy": "Alterado por",
+        "lastModifiedDate": "Alterado em"
+    }
+}
