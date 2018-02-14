@@ -12,34 +12,39 @@ export default class ListaContato extends React.Component<IListaContatoProps, nu
         super(props);
     }
 
-    editarContato(contato) {
-        console.log('Aqui');
-        // PubSub.publish('contato-showmodal', contato);
+    editarContato = (contato, event) => {
+        PubSub.publish('contato-showmodal', contato);
     }
 
     render() {
         const { contatos } = this.props;
         return (
-            <Table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Tipo contato</th>
-                    <th>Contato</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    {contatos.map((contato, i) => (
-                        <tr key={i}>
-                            <th scope="row">{i}</th>
-                            <td>{contato.tipoContato}</td>
-                            <td>{contato.contato}</td>
-                            <td><Button type="button" onClick={this.editarContato(contato)}>Editar</Button></td>
-                        </tr>
-                    ))}
-                </tbody>
-              </Table>
+            <div>
+                <Table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo contato</th>
+                        <th>Código de Área</th>
+                        <th>Contato</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {contatos.map((contato, i) => (
+                            <tr key={i}>
+                                <th scope="row">{i}</th>
+                                <td>{contato.tipoContato}</td>
+                                <td>{contato.codigoArea}</td>
+                                <td>{contato.contato}</td>
+                                <td>
+                                    <Button type="button" onClick={this.editarContato.bind(event, contato)}>Editar</Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+              </div>
         );
     }
 }

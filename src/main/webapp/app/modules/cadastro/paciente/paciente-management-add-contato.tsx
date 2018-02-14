@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from 'reactstrap';
-import { AvForm, AvGroup, AvInput, AvFeedback, Av } from 'availity-reactstrap-validation';
+import { AvForm, AvGroup, AvInput, AvFeedback, Av, } from 'availity-reactstrap-validation';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
 import { PubSub } from 'pubsub-js';
@@ -23,32 +23,40 @@ export interface IContatoManagementModelState {
   showModal: boolean;
   isNew: boolean;
   contato: any;
+  erro: string;
 }
 export class ContatoManagementDialog extends React.Component<IContatoManagementModelProps, IContatoManagementModelState> {
 
   constructor(props) {
     super(props);
     this.state = {
-      showModal: true,
+      showModal: false,
       isNew: true,
-      contato: this.props.contato
+      contato: this.props.contato,
+      erro: null
     };
     PubSub.subscribe('contato-showmodal', this.handleShowModal);
   }
 
   handleShowModal = (msg, contato) => {
-    this.setState({ showModal: true, contato });
+    this.setState({ showModal: true, contato, erro: null });
   }
 
   saveContato = (event, errors, values) => {
-    if (this.state.isNew) {
+    if (errors.length === 0) {
+      this.handleClose();
+      PubSub.publish('paciente-atualizar-contatos', values);
     }
-    this.handleClose();
-    PubSub.publish('paciente-atualizar-contatos', values);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ isNew: !nextProps.contato.id });
+  }
+
+  handleTipoContato = (event, input) => {
+    const contato = this.state.contato;
+    contato.tipoContato = input;
+    this.setState({ contato });
   }
 
   handleClose = () => {
@@ -82,24 +90,31 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
             </AvGroup>
             <AvGroup>
               <Label for="tipoContato"><Translate contentKey="contatoManagement.tipoContato">Código de Área</Translate></Label>
-              <AvInput type="select" className="form-control" name="tipoContato" value={contato.tipoContato}>
-                <option>Selecione</option>
+              <AvInput type="select" className="form-control" name="tipoContato" value={contato.tipoContato} 
+                onChange={this.handleTipoContato}>
                 <option value="TELEFONE">Telefone</option>
                 <option value="EMAIL">E-mail</option>
               </AvInput>
             </AvGroup>
-            <AvGroup>
-              <Label for="codigoArea"><Translate contentKey="contatoManagement.codigoArea">Código de Área</Translate></Label>
-              <AvInput type="text" className="form-control" name="codigoArea" value={contato.codigoArea}  required />
-              <AvFeedback>This field is required.</AvFeedback>
-              <AvFeedback>This field cannot be longer than 50 characters.</AvFeedback>
-            </AvGroup>
-            <AvGroup>
-              <Label for="contato"><Translate contentKey="contatoManagement.contato">Contato</Translate></Label>
-              <AvInput type="text" className="form-control" name="contato" value={contato.contato} required />
-              <AvFeedback>This field is required.</AvFeedback>
-              <AvFeedback>This field cannot be longer than 50 characters.</AvFeedback>
-            </AvGroup>
+            { contato.tipoContato === 'TELEFONE'
+              ? <div>
+                  <AvGroup>
+                    <Label for="codigoArea"><Translate contentKey="contatoManagement.codigoArea">Código de Área</Translate></Label>
+                    <AvInput type="text" className="form-control" name="codigoArea" value={contato.codigoArea}  required />
+                    <AvFeedback>Este campo é obrigatório.</AvFeedback>
+                  </AvGroup>
+                  <AvGroup>
+                    <Label for="contato"><Translate contentKey="contatoManagement.contato">Contato</Translate></Label>
+                    <AvInput type="text" className="form-control" name="contato" value={contato.contato} required />
+                    <AvFeedback>Este campo é obrigatório.</AvFeedback>
+                  </AvGroup>
+                </div>
+              : <AvGroup>
+                  <Label for="contato"><Translate contentKey="contatoManagement.contato">Contato</Translate></Label>
+                  <AvInput type="email" className="form-control" name="contato" value={contato.contato} required />
+                  <AvFeedback>Este campo é obrigatório.</AvFeedback>
+                </AvGroup>
+            }
           </ModalBody>
           <ModalFooter>
             <Button color="secondary" onClick={this.handleClose}>

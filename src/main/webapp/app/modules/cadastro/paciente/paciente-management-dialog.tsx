@@ -5,7 +5,6 @@ import { Button, Label, Table } from 'reactstrap';
 import { AvForm, AvGroup, AvInput, AvFeedback } from 'availity-reactstrap-validation';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
-import contatoManagement from './contato/contato-management-dialog';
 import { v4 } from 'uuid';
 
 import ListaContato from './lista-contato';
@@ -14,6 +13,7 @@ import { getContatos } from '../../../reducers/contato-management';
 import { locales } from '../../../config/translation';
 import { Link } from 'react-router-dom';
 import ContatoManagementDialog from './paciente-management-add-contato';
+import ContatoDeleteDialog from './paciente-management-delete-dialog';
 
 export interface IPacienteManagementModelProps {
   getPaciente: ICrudGetAction;
@@ -78,13 +78,23 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
 
   saveContato = (msg, auxContato) => {
     const contatos = this.state.contatos;
-    contatos.push(auxContato);
     let indice = -1;
-    contatos.map((item, index) => item.uuid === auxContato.uuid ? indice = index : null);
+    contatos.map((item, index) => {
+      if (item.uuid === auxContato.uuid) {
+        indice = index;
+      }
+    });
     if (indice >= 0) {
       contatos[indice] = auxContato;
+    } else {
+      contatos.push(auxContato);
     }
     this.setState({ contatos });
+  }
+
+  deleteContato = (msg, auxContato) => {
+    const contatos = this.state.contatos;
+    contatos.map((item, index) => { item.uuid === auxContato.uuid && contatos.splice(index, 1); });
   }
 
   render() {
