@@ -16,6 +16,10 @@ export default class ListaContato extends React.Component<IListaContatoProps, nu
         PubSub.publish('contato-showmodal', contato);
     }
 
+    deletarContato = (contato, event) => {
+        PubSub.publish('contato-delete-showmodal', contato);
+    }
+
     render() {
         const { contatos } = this.props;
         return (
@@ -39,6 +43,7 @@ export default class ListaContato extends React.Component<IListaContatoProps, nu
                                 <td>{contato.contato}</td>
                                 <td>
                                     <Button type="button" onClick={this.editarContato.bind(event, contato)}>Editar</Button>
+                                    <Button type="button" onClick={this.deletarContato.bind(event, contato)}>Excluir</Button>
                                 </td>
                             </tr>
                         ))}

@@ -8,18 +8,19 @@ import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
 import { v4 } from 'uuid';
 
 import ListaContato from './lista-contato';
-import { getPaciente, updatePaciente, createPaciente } from '../../../reducers/paciente-management';
+import { getPaciente, updatePaciente, createPacienteContinue } from '../../../reducers/paciente-management';
 import { getContatos } from '../../../reducers/contato-management';
 import { locales } from '../../../config/translation';
 import { Link } from 'react-router-dom';
 import ContatoManagementDialog from './paciente-management-add-contato';
-import ContatoDeleteDialog from './paciente-management-delete-dialog';
+import ContatoDeleteDialog from './paciente-management-delete-contato';
+import { error } from 'util';
 
 export interface IPacienteManagementModelProps {
   getPaciente: ICrudGetAction;
   getContatos: ICrudGetAction;
   updatePaciente: ICrudPutAction;
-  createPaciente: ICrudPutAction;
+  createPacienteContinue: ICrudPutAction;
   loading: boolean;
   updating: boolean;
   paciente: any;
@@ -46,8 +47,8 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
       showCadastroContrato: false,
       contatos: this.props.contatos
     };
-    console.log(v4());
     PubSub.subscribe('paciente-atualizar-contatos', this.saveContato);
+    PubSub.subscribe('paciente-delete-contato', this.deleteContato);
   }
 
   componentDidMount() {
@@ -55,13 +56,17 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
     !this.state.isNew && this.props.getContatos(this.props.match.params.id);
   }
 
-  savePaciente = (event, errors, values) => {
+  savePacienteAndClose = (event, errors, values) => {
+    this.savePaciente(event, errors, values);
+    this.handleClose();
+  }
+
+  savePaciente(event, errors, values) {
     if (this.state.isNew) {
-      this.props.createPaciente(values);
+      this.props.createPacienteContinue(values);
     } else {
       this.props.updatePaciente(values);
     }
-    this.handleClose();
   }
 
   handleClose = () => {
@@ -71,8 +76,15 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
     this.props.history.push('/cadastro/paciente');
   }
 
+  savePacienteAndAddContato = (event, errors, values) => {
+    if (errors.length === 0) {
+      this.savePaciente(event, errors, values);
+      this.addContato();
+    }
+  }
+
   addContato = () => {
-    const novoContato = { uuid: v4(), tipoContato: 'TELEFONE', codigoArea: '32' };
+    const novoContato = { uuid: v4(), pacienteId: this.props.paciente.id, tipoContato: 'TELEFONE', codigoArea: '32' };
     PubSub.publish('contato-showmodal', novoContato);
   }
 
@@ -95,6 +107,7 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
   deleteContato = (msg, auxContato) => {
     const contatos = this.state.contatos;
     contatos.map((item, index) => { item.uuid === auxContato.uuid && contatos.splice(index, 1); });
+    this.setState({ contatos });
   }
 
   render() {
@@ -107,7 +120,7 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
           <Translate contentKey="pacienteManagement.home.createOrEditLabel">Create or edit a User</Translate>
         </h2>
         {loading ? <p>Loading...</p>
-          : <AvForm model={isNew ? {} : paciente} onSubmit={this.savePaciente} >
+          : <AvForm model={!paciente.id ? {} : paciente} onSubmit={!isNew ? this.savePacienteAndClose : this.savePacienteAndAddContato} >
             {paciente.id ?
               <AvGroup>
                 <Label for="id"><Translate contentKey="global.field.id">ID</Translate></Label>
@@ -126,13 +139,20 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
               <AvInput type="date" className="form-control" name="dataNascimento" />
             </AvGroup>
             <h3>Contato(s)
-                <Button onClick={this.addContato}>
-                Add Contato
-                </Button>
+                {paciente.id ?
+                  <Button onClick={this.addContato}>
+                    Add Contato
+                  </Button>
+                :
+                  <Button type="submit">
+                    Add Contato
+                  </Button>
+                }
             </h3>
             <ListaContato contatos={contatos} />
             <ContatoManagementDialog loading={loading} updating={updating}
               match={match} contato={contato} showModal={showModal} />
+            <ContatoDeleteDialog/>
             <Button color="secondary" onClick={this.handleClose}>
               <FaBan />&nbsp;
                 <Translate contentKey="entity.action.cancel">Cancel</Translate>
@@ -158,7 +178,7 @@ const mapStateToProps = storeState => ({
 const mapDispatchToProps = {
   getPaciente,
   updatePaciente,
-  createPaciente,
+  createPacienteContinue,
   getContatos
 };
 

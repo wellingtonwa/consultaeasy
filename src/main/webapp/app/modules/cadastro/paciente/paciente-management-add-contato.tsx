@@ -1,16 +1,17 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from 'reactstrap';
-import { AvForm, AvGroup, AvInput, AvFeedback, Av, } from 'availity-reactstrap-validation';
+import { AvForm, AvGroup, AvInput, AvFeedback, Av} from 'availity-reactstrap-validation';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
 import { PubSub } from 'pubsub-js';
 
-import { getContato } from '../../../reducers/paciente-management';
+import { getContato, createContato } from '../../../reducers/contato-management';
 import { locales } from '../../../config/translation';
 
 export interface IContatoManagementModelProps {
   getContato: ICrudGetAction;
+  createContato: ICrudPutAction;
   loading: boolean;
   updating: boolean;
   paciente: any;
@@ -44,6 +45,7 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
 
   saveContato = (event, errors, values) => {
     if (errors.length === 0) {
+      this.props.createContato(values);
       this.handleClose();
       PubSub.publish('paciente-atualizar-contatos', values);
     }
@@ -87,6 +89,7 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
             }
             <AvGroup>
               <AvInput type="hidden" className="form-control" name="uuid" value={contato.uuid} />
+              <AvInput type="hidden" className="form-control" name="pacienteId" value={contato.pacienteId} />
             </AvGroup>
             <AvGroup>
               <Label for="tipoContato"><Translate contentKey="contatoManagement.tipoContato">Código de Área</Translate></Label>
@@ -140,6 +143,6 @@ const mapStateToProps = storeState => ({
   updating: storeState.pacienteManagement.updating
 });
 
-const mapDispatchToProps = { getContato };
+const mapDispatchToProps = { getContato, createContato };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContatoManagementDialog);

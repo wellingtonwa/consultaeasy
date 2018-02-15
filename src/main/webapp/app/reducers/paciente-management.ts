@@ -147,6 +147,19 @@ export const createPaciente: ICrudPutAction = paciente => async dispatch => {
   return result;
 };
 
+export const createPacienteContinue: ICrudPutAction = paciente => async dispatch => {
+  const result = await dispatch({
+    type: ACTION_TYPES.CREATE_PACIENTE,
+    meta: {
+      successMessage: messages.DATA_CREATE_SUCCESS_ALERT,
+      errorMessage: messages.DATA_UPDATE_ERROR_ALERT
+    },
+    payload: axios.post(apiUrl, paciente)
+  });
+  dispatch(getPaciente(result.value.data.id));
+  return result;
+};
+
 export const updatePaciente: ICrudPutAction = paciente => async dispatch => {
   const result = await dispatch({
     type: ACTION_TYPES.UPDATE_PACIENTE,

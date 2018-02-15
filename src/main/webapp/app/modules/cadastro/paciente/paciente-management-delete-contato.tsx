@@ -8,7 +8,7 @@ export interface IContatoManagementState {
     contato: any;
 }
 
-export class ContatoDeleteDialog extends React.Component<null, IContatoManagementState> {
+export default class ContatoDeleteDialog extends React.Component<null, IContatoManagementState> {
 
     constructor(props) {
         super(props);
@@ -16,11 +16,11 @@ export class ContatoDeleteDialog extends React.Component<null, IContatoManagemen
             showModal: false,
             contato: {}
         };
-        PubSub.subscribe('contato-deletedialog-showmodal', this.handleShowModal);
+        PubSub.subscribe('contato-delete-showmodal', this.handleShowModal);
     }
 
     handleShowModal = (msg, contato) => {
-        this.setState({ contato });
+        this.setState({ contato, showModal: true });
     }
 
     handleClose = () => {
@@ -38,12 +38,12 @@ export class ContatoDeleteDialog extends React.Component<null, IContatoManagemen
             <Modal isOpen={showModal} modalTransition={{ timeout: 20 }} backdropTransition={{ timeout: 20 }}
                 toggle={this.handleClose} size="lg">
                 <ModalHeader toggle={this.handleClose}><Translate contentKey="entity.delete.title">Delete Title</Translate> </ModalHeader>
-                <ModalBody><Translate contentKey="contatoManagemento.delete.question" interpolate={{ contato: contato.contato }}>delete question</Translate></ModalBody>
+                <ModalBody><Translate contentKey="contatoManagement.delete.question" interpolate={{ contato: contato.contato }}>delete question</Translate></ModalBody>
                 <ModalFooter>
                     <Button color="secondary" onClick={this.handleClose}>
                         <Translate contentKey="entity.action.cancel">Cancel</Translate>
                     </Button>
-                    <Button color="primary" onClick={this.confirmDelete}>
+                    <Button color="primary" onClick={this.confirmDelete.bind(event, contato)}>
                         <Translate contentKey="entity.action.delete">Confirm</Translate>
                     </Button>
                 </ModalFooter>
