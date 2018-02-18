@@ -64,7 +64,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        contatos: action.payload.data
+        contato: action.payload.data
       };
     case SUCCESS(ACTION_TYPES.CREATE_CONTATO):
     case SUCCESS(ACTION_TYPES.UPDATE_CONTATO):
@@ -107,7 +107,7 @@ export const createContato: ICrudPutAction = (idPaciente, contato) => async disp
     },
     payload: axios.post(`${apiUrl}/${idPaciente}`, contato)
   });
-  dispatch(getContatos());
+  dispatch(getContatos(result.value.data.idPaciente));
   return result;
 };
 export const updateContato: ICrudPutAction = (idContato, contato) => async dispatch => {

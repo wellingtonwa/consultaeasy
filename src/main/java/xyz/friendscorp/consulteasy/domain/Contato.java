@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  *
  * @author wellington
@@ -38,6 +40,7 @@ public class Contato extends AbstractAuditingEntity implements Serializable {
     private EnumTipoContato tipoContato;
     @ManyToOne
     @JoinColumn(name = "id_paciente")
+    @JsonBackReference
     private Paciente paciente;
 
     public Contato() {

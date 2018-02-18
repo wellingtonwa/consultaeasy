@@ -5,9 +5,11 @@
  */
 package xyz.friendscorp.consulteasy.service;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import xyz.friendscorp.consulteasy.domain.Contato;
 import xyz.friendscorp.consulteasy.domain.EnumTipoContato;
 import xyz.friendscorp.consulteasy.domain.Paciente;
 import xyz.friendscorp.consulteasy.repository.ContatoRepository;
+import xyz.friendscorp.consulteasy.repository.PacienteRepository;
 import xyz.friendscorp.consulteasy.service.dto.ContatoDTO;
 
 /**
@@ -26,11 +29,14 @@ import xyz.friendscorp.consulteasy.service.dto.ContatoDTO;
 @Transactional
 public class ContatoService {
     
+    @Autowired
     private ContatoRepository contatoRepository;
+    @Autowired
+    private PacienteRepository pacienteRepository;
 
     public Contato contatoFromDTO(ContatoDTO contatoDTO) {
-        Paciente paciente = new Paciente();
-        paciente.setId(contatoDTO.getId());
+        System.out.println(contatoDTO);
+        Paciente paciente = pacienteRepository.findOne(contatoDTO.getIdPaciente());
         Contato contato = new Contato(contatoDTO.getId(), 
                 contatoDTO.getCodigoArea(), 
                 contatoDTO.getContato(), 
@@ -38,7 +44,6 @@ public class ContatoService {
                 paciente);
         return contato;
     }
-    
     
     public ContatoService(ContatoRepository contatoRepository) {
         this.contatoRepository = contatoRepository;
@@ -68,11 +73,15 @@ public class ContatoService {
         return contatoRepository.getContatosByIdPaciente(idPaciente, pageable);
     }
     
-    public List<Contato> findAll(Long idPaciente){
-        return contatoRepository.getAllContatosByPacienteId(idPaciente);
+    public List<ContatoDTO> findAll(Long idPaciente){
+        return contatoRepository.getAllContatosByPacienteId(idPaciente).stream().map(ContatoDTO::new).collect(Collectors.toList());
     }
     
     public Contato findContato(Long idContato){
         return contatoRepository.getContatoForCurrentUser(idContato);
+    }
+
+    public void deleteContato(Long idContato){
+        contatoRepository.deleteByCurrentUser(idContato);
     }
 }

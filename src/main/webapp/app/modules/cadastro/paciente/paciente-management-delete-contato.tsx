@@ -1,53 +1,82 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from 'reactstrap';
 import { PubSub } from 'pubsub-js';
 import { Translate } from 'react-jhipster';
+import { getContato, deleteContato } from '../../../reducers/contato-management';
+import { getPaciente } from '../../../reducers/paciente-management';
 
-export interface IContatoManagementState {
-    showModal: boolean;
+export interface IContatoManagementProps {
     contato: any;
+    match: any;
+    history: any;
+    loading: boolean;
+    getContato: any;
+    deleteContato: any;
+    getPaciente: any;
 }
 
-export default class ContatoDeleteDialog extends React.Component<null, IContatoManagementState> {
+export class ContatoDeleteDialog extends React.Component<IContatoManagementProps, null> {
 
     constructor(props) {
         super(props);
-        this.state = {
-            showModal: false,
-            contato: {}
-        };
         PubSub.subscribe('contato-delete-showmodal', this.handleShowModal);
+        this.props.getContato(this.props.match.params.idContato);
     }
 
     handleShowModal = (msg, contato) => {
-        this.setState({ contato, showModal: true });
+        this.setState({ contato });
     }
 
-    handleClose = () => {
-        this.setState({ showModal: false });
+    handleClose = (event, id) => {
+        console.log(event);
+        if (id) {
+            this.props.history.push(`/cadastro/paciente/${id}/edit`);
+        } else {
+            this.props.history.push(`/cadastro/paciente/${this.props.contato.idPaciente}/edit`);
+        }
     }
 
     confirmDelete = (contato, event) => {
-        PubSub.publish('paciente-delete-contato', contato);
-        this.handleClose();
+        this.handleClose(contato.idPaciente, null);
+        this.props.deleteContato(contato.id);
     }
 
     render() {
-        const { showModal, contato } = this.state;
+        const { contato, loading } = this.props;
         return (
-            <Modal isOpen={showModal} modalTransition={{ timeout: 20 }} backdropTransition={{ timeout: 20 }}
-                toggle={this.handleClose} size="lg">
-                <ModalHeader toggle={this.handleClose}><Translate contentKey="entity.delete.title">Delete Title</Translate> </ModalHeader>
-                <ModalBody><Translate contentKey="contatoManagement.delete.question" interpolate={{ contato: contato.contato }}>delete question</Translate></ModalBody>
-                <ModalFooter>
-                    <Button color="secondary" onClick={this.handleClose}>
-                        <Translate contentKey="entity.action.cancel">Cancel</Translate>
-                    </Button>
-                    <Button color="primary" onClick={this.confirmDelete.bind(event, contato)}>
-                        <Translate contentKey="entity.action.delete">Confirm</Translate>
-                    </Button>
-                </ModalFooter>
-            </Modal>
+            <div>
+                <h2><Translate contentKey="entity.delete.title">Delete Title</Translate></h2>
+                {loading ? <p>Carregando...</p>
+                 : <div>
+                        <Translate contentKey="contatoManagement.delete.question" interpolate={{ contato: contato.contato }}>delete question</Translate>
+                        <div>
+                            <Button color="secondary" onClick={this.handleClose.bind(event, null)}>
+                                <Translate contentKey="entity.action.cancel">Cancel</Translate>
+                            </Button>
+                            <Button color="primary" onClick={this.confirmDelete.bind(event, contato)}>
+                                <Translate contentKey="entity.action.delete">Confirm</Translate>
+                            </Button>
+                        </div>
+                    </div>
+                }
+            </div>
         );
     }
 }
+
+const mapStateToProps = storeState => ({
+    paciente: storeState.pacienteManagement.paciente,
+    contatos: storeState.contatoManagement.contatos,
+    contato: storeState.contatoManagement.contato,
+    loading: storeState.contatoManagement.loading,
+    updating: storeState.contatoManagement.updating
+  });
+
+const mapDispatchToProps = {
+    deleteContato,
+    getContato,
+    getPaciente
+  };
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContatoDeleteDialog);

@@ -1,0 +1,6 @@
+{
+    "tipoContato": {
+        "TELEFONE": "Telefone",
+        "EMAIL": "E-mail"
+    }
+}
