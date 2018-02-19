@@ -14,14 +14,6 @@ export default class ListaContato extends React.Component<IListaContatoProps, nu
         super(props);
     }
 
-    editarContato = (contato, event) => {
-        PubSub.publish('contato-showmodal', contato);
-    }
-
-    deletarContato = (contato, event) => {
-        PubSub.publish('contato-delete-showmodal', contato);
-    }
-
     render() {
         const { contatos } = this.props;
         return (
@@ -37,9 +29,9 @@ export default class ListaContato extends React.Component<IListaContatoProps, nu
                     </tr>
                     </thead>
                     <tbody>
-                        {!contatos ?
+                        {contatos.length === 0 ?
                             <tr>
-                                <td colSpan={5}>Nenhum contato cadastrado</td>
+                                <td colSpan={5} style={{ textAlign: 'center' }}>Nenhum contato cadastrado</td>
                             </tr>
                             : contatos.map((contato, i) => (
                                 <tr key={i}>
@@ -48,9 +40,9 @@ export default class ListaContato extends React.Component<IListaContatoProps, nu
                                     <td>{contato.codigoArea}</td>
                                     <td>{contato.contato}</td>
                                     <td>
-                                        <Button color="secondary" tag={Link} to={`/cadastro/paciente/${contato.idPaciente}/edit/contato/edit/${contato.id}`}>Editar</Button>
+                                        <Button color="primary" tag={Link} to={`/cadastro/paciente/${contato.idPaciente}/edit/contato/edit/${contato.id}`}>Editar</Button>
                                         &nbsp;
-                                        <Button color="secondary" tag={Link} to={`/cadastro/paciente/${contato.idPaciente}/edit/contato/delete/${contato.id}`}>Excluir</Button>
+                                        <Button color="danger" tag={Link} to={`/cadastro/paciente/${contato.idPaciente}/edit/contato/delete/${contato.id}`}>Excluir</Button>
                                     </td>
                                 </tr>
                             ))

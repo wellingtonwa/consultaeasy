@@ -26,16 +26,14 @@ export interface IPacienteManagementModelProps {
   updatingContato: boolean;
   paciente: any;
   contatos: any[];
-  contato: any;
   match: any;
   history: any;
 }
 
 export interface IPacienteManagementModelState {
   showModal: boolean;
-  showCadastroContato: boolean;
   isNew: boolean;
-  isNewContato: boolean;
+  paciente: any;
 }
 
 export class PacienteManagementDialog extends React.Component<IPacienteManagementModelProps, IPacienteManagementModelState> {
@@ -46,15 +44,15 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
     this.state = {
       showModal: true,
       isNew: !this.props.match.params || !this.props.match.params.id,
-      showCadastroContato: false,
-      isNewContato: false
+      paciente: !this.props.match.params || !this.props.match.params.id ? {} : this.props.paciente
     };
-    PubSub.subscribe('paciente-atualizar-contatos', this.atualizarContatos());
   }
 
-  componentDidMount() {
-    console.log('didmount paciente');
-    !this.state.isNew && this.props.getPaciente(this.props.match.params.id);
+  async componentDidMount() {
+    if (!this.state.isNew) {
+      const result = await this.props.getPaciente(this.props.match.params.id);
+      this.setState({ paciente: result.value.data });
+    }
     this.atualizarContatos();
   }
 
@@ -88,8 +86,8 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
 
   render() {
     const isInvalid = false;
-    const { paciente, loading, loadingContato, updating, updatingContato, match, history, contatos, contato } = this.props;
-    const { showModal, isNew, showCadastroContato, isNewContato } = this.state;
+    const { loading, updating, match, history, contatos } = this.props;
+    const { paciente, showModal, isNew } = this.state;
     return (
       <div>
         <h2>
@@ -116,11 +114,11 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
             </AvGroup>
             <h3>Contato(s)
                 {!isNew ?
-                  <Button color="secondary" tag={Link} to={`${match.url}/contato/new`}>
+                  <Button color="primary" tag={Link} to={`${match.url}/contato/new`} className="btn btn-primary float-right jh-create-entity">
                     Add Contato
                   </Button>
                 :
-                  <Button type="submit">
+                  <Button color="primary" type="submit" className="btn btn-primary float-right jh-create-entity">
                     Add Contato
                   </Button>
                 }
