@@ -174,7 +174,7 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
               <Label for="nomeCompleto"><Translate contentKey="pacienteManagement.nomeCompleto">Login</Translate></Label>
               <AvInput type="text" className="form-control" name="nomeCompleto"
               value={paciente.nomeCompleto} onChange={this.handleNomeCompletoOnChange}
-              innerRef={this.setFirstFieldRef} required/>
+              innerRef={this.setFirstFieldRef} autoFocus required/>
               <AvFeedback>This field is required.</AvFeedback>
               <AvFeedback>This field cannot be longer than 50 characters.</AvFeedback>
             </AvGroup>

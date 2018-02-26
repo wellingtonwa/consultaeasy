@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Label } from 'reactstrap';
 import { AvForm, AvGroup, AvInput, AvFeedback, Av } from 'availity-reactstrap-validation';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
+import InputMask from 'react-input-mask';
 import { FaBan, FaFloppyO } from 'react-icons/lib/fa';
 import { PubSub } from 'pubsub-js';
 
@@ -105,7 +106,7 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
               <AvGroup>
                 <Label for="tipoContato"><Translate contentKey="contatoManagement.tipoContato">Código de Área</Translate></Label>
                 <AvInput type="select" className="form-control" name="tipoContato"
-                  value={contato.tipoContato}
+                  value={contato.tipoContato} autoFocus
                   onChange={this.handleTipoContato.bind(event)}>
                   <option value="TELEFONE">Telefone</option>
                   <option value="EMAIL">E-mail</option>
@@ -115,7 +116,8 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
                 ? <div>
                     <AvGroup>
                       <Label for="codigoArea"><Translate contentKey="contatoManagement.codigoArea">Código de Área</Translate></Label>
-                      <AvInput type="text" className="form-control" name="codigoArea" value={contato.codigoArea} required/>
+                      <AvInput tag={InputMask} className="form-control" name="codigoArea" value={contato.codigoArea}
+                      mask="99" required/>
                       <AvFeedback>Este campo é obrigatório.</AvFeedback>
                     </AvGroup>
                   </div>
@@ -123,8 +125,10 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
               }
               <AvGroup>
                 <Label for="contato"><Translate contentKey={`tipoContato.${contato.tipoContato}`}>Contato</Translate></Label>
-                <AvInput type="text" className="form-control" name="contato" value={contato.contato} required/>
-                <AvFeedback>Este campo é obrigatório.</AvFeedback>
+                {contato.tipoContato !== 'TELEFONE'
+                ? <AvInput type="text" className="form-control" name="contato" value={contato.contato} required/>
+                : <AvInput tag={InputMask} mask="999999999" className="form-control" name="contato" value={contato.contato} required/>}
+                  <AvFeedback>Este campo é obrigatório.</AvFeedback>
               </AvGroup>
               <div>
                 <Button color="secondary" onClick={this.handleClose}>
