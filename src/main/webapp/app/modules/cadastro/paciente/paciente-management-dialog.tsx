@@ -34,17 +34,24 @@ export interface IPacienteManagementModelState {
   showModal: boolean;
   isNew: boolean;
   paciente: any;
+  hasErrors: boolean;
+  avForm: any;
+  firstField: any;
+  firstFieldRef: any;
 }
 
 export class PacienteManagementDialog extends React.Component<IPacienteManagementModelProps, IPacienteManagementModelState> {
 
   constructor(props) {
     super(props);
-    console.log('constructor paciente');
     this.state = {
       showModal: true,
       isNew: !this.props.match.params || !this.props.match.params.id,
-      paciente: !this.props.match.params || !this.props.match.params.id ? {} : this.props.paciente
+      paciente: !this.props.match.params || !this.props.match.params.id ? {} : this.props.paciente,
+      hasErrors: false,
+      avForm: null,
+      firstField: null,
+      firstFieldRef: null
     };
   }
 
@@ -52,6 +59,12 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
     if (!this.state.isNew) {
       const result = await this.props.getPaciente(this.props.match.params.id);
       this.setState({ paciente: result.value.data });
+    } else {
+      this.setState({ paciente: {} });
+    }
+    if (this.state.firstField) {
+      console.log(this.state.firstField);
+      console.log(this.state.firstField.props.tag.focus);
     }
     this.atualizarContatos();
   }
@@ -84,17 +97,72 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
     }
   }
 
+  handleNomeCompletoOnChange = (event, data) => {
+    const { paciente } = this.state;
+    paciente.nomeCompleto = data;
+    this.setState({ paciente });
+  }
+
+  handleDataNascimentoOnChange = (event, data, dados) => {
+    const { paciente } = this.state;
+    paciente.dataNascimento = data;
+    this.setState(paciente);
+  }
+
+  submitFormAndAddContact = async () => {
+    let idPaciente = null;
+    const validationResult = await this.state.avForm.validateAll(this.state.paciente);
+    if (!validationResult.isValid) {
+      return;
+    }
+    if (this.state.isNew) {
+      const result = await this.props.createPacienteContinue(this.state.paciente);
+      idPaciente = result.value.data.id;
+    } else {
+      this.props.updatePaciente(this.state.paciente);
+      idPaciente = this.state.paciente.id;
+    }
+    this.props.history.push(`/cadastro/paciente/${idPaciente}/edit/contato/new`);
+  }
+
+  submitForm = async () => {
+    const validationResult = await this.state.avForm.validateAll(this.state.paciente);
+
+    if (!validationResult.isValid) {
+      return;
+    }
+
+    if (this.state.isNew) {
+      this.props.createPacienteContinue(this.state.paciente);
+    } else {
+      this.props.updatePaciente(this.state.paciente);
+    }
+    this.handleClose();
+  }
+
+  setAvFormInstance = comp => {
+    this.setState({ avForm: comp });
+  }
+
+  setFirstField = comp => {
+    this.setState({ firstField: comp });
+  }
+
+  setFirstFieldRef = comp => {
+    this.setState({ firstFieldRef: comp });
+  }
+
   render() {
     const isInvalid = false;
     const { loading, updating, match, history, contatos } = this.props;
-    const { paciente, showModal, isNew } = this.state;
+    const { paciente, showModal, isNew, hasErrors } = this.state;
     return (
       <div>
         <h2>
           <Translate contentKey="pacienteManagement.home.createOrEditLabel">Create or edit a User</Translate>
         </h2>
         {loading ? <p>Loading...</p>
-          : <AvForm model={isNew ? {} : paciente} onSubmit={isNew ? this.savePacienteAndAddContato : this.savePacienteAndClose} >
+          : <AvForm model={paciente} ref={this.setAvFormInstance} >
             {!isNew ?
               <AvGroup>
                 <Label for="id"><Translate contentKey="global.field.id">ID</Translate></Label>
@@ -104,31 +172,27 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
             }
             <AvGroup>
               <Label for="nomeCompleto"><Translate contentKey="pacienteManagement.nomeCompleto">Login</Translate></Label>
-              <AvInput type="text" className="form-control" name="nomeCompleto" value={paciente.nomeCompleto} required />
+              <AvInput type="text" className="form-control" name="nomeCompleto"
+              value={paciente.nomeCompleto} onChange={this.handleNomeCompletoOnChange}
+              innerRef={this.setFirstFieldRef} required/>
               <AvFeedback>This field is required.</AvFeedback>
               <AvFeedback>This field cannot be longer than 50 characters.</AvFeedback>
             </AvGroup>
             <AvGroup>
               <Label for="dataNascimento"><Translate contentKey="pacienteManagement.dataNascimento">First Name</Translate></Label>
-              <AvInput type="date" className="form-control" value={paciente.dataNascimento} name="dataNascimento" />
+              <AvInput type="date" className="form-control" value={paciente.dataNascimento} name="dataNascimento" onChange={this.handleDataNascimentoOnChange}/>
             </AvGroup>
             <h3>Contato(s)
-                {!isNew ?
-                  <Button color="primary" tag={Link} to={`${match.url}/contato/new`} className="btn btn-primary float-right jh-create-entity">
-                    Add Contato
-                  </Button>
-                :
-                  <Button color="primary" type="submit" className="btn btn-primary float-right jh-create-entity">
-                    Add Contato
-                  </Button>
-                }
+              <Button color="primary" className="btn btn-primary float-right jh-create-entity" onClick={this.submitFormAndAddContact}>
+                Add Contato
+              </Button>
             </h3>
             <ListaContato contatos={!isNew ? contatos : []} />
             <Button color="secondary" onClick={this.handleClose}>
               <FaBan />&nbsp;
                 <Translate contentKey="entity.action.cancel">Cancel</Translate>
             </Button>
-            <Button color="primary" type="submit" disabled={isInvalid || updating}>
+            <Button color="primary" type="submit" disabled={isInvalid || updating} onClick={this.submitForm}>
               <FaFloppyO />&nbsp;
                 <Translate contentKey="entity.action.save">Save</Translate>
             </Button>
