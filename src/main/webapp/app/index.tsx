@@ -12,6 +12,8 @@ import { clearAuthentication } from './reducers/authentication';
 import AppComponent from './app';
 import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/omega/theme.css';
+import 'font-awesome/css/font-awesome.css';
+import $ from 'jquery';
 
 const devTools = process.env.NODE_ENV === 'development' ? <DevTools /> : null;
 
