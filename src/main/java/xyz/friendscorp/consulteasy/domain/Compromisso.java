@@ -34,7 +34,7 @@ public class Compromisso extends AbstractAuditingEntity implements Serializable 
     private Instant inicio;
     private Instant termino;
     @Column(name="dia_todo")
-    private Boolean diaTodo;
+    private Boolean diaTodo = false;
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name="id_marcador")

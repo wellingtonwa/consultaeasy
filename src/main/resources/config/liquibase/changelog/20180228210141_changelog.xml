@@ -1,0 +1,39 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="wellington (generated)" id="1519851709040-1">
+        <createTable tableName="compromisso">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="compromissoPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="VARCHAR(50)"/>
+            <column name="last_modified_date" type="TIMESTAMP"/>
+            <column name="descricao" type="VARCHAR(255)"/>
+            <column name="dia_todo" type="BOOLEAN"/>
+            <column name="inicio" type="TIMESTAMP"/>
+            <column name="termino" type="TIMESTAMP"/>
+            <column name="titulo" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_marcador" type="BIGINT"/>
+            <column name="id_paciente" type="BIGINT"/>
+            <column name="id_user" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="wellington (generated)" id="1519851709040-2">
+        <addForeignKeyConstraint baseColumnNames="id_user" baseTableName="compromisso" constraintName="FK87c08xvt5fv6hnrwgsrg6soiq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user"/>
+    </changeSet>
+    <changeSet author="wellington (generated)" id="1519851709040-3">
+        <addForeignKeyConstraint baseColumnNames="id_marcador" baseTableName="compromisso" constraintName="FKk2b26vkv8t8sowp3s2abs6sj9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="marcador"/>
+    </changeSet>
+    <changeSet author="wellington (generated)" id="1519851709040-4">
+        <addForeignKeyConstraint baseColumnNames="id_paciente" baseTableName="compromisso" constraintName="FKmtxvvsqp529vcbko1viy0e09l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="paciente"/>
+    </changeSet>
+</databaseChangeLog>
