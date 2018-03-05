@@ -123,5 +123,5 @@ public class CompromissoDTO {
     public void setMarcador(Long marcador) {
         this.marcador = marcador;
     }
-    
+
 }

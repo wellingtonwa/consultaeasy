@@ -42,7 +42,7 @@ public class CompromissoService {
         , paciente, user);
         return compromisso;
     }
-    
+
     public CompromissoService(CompromissoRepository compromissoRepository, PacienteRepository pacienteRepository,
     MarcadorRepository marcadorRepository, 
     UserService userService) {
@@ -51,7 +51,7 @@ public class CompromissoService {
         this.pacienteRepository = pacienteRepository;
         this.marcadorRepository = marcadorRepository;
     }
-    
+
     public Compromisso createCompromisso(CompromissoDTO compromissoDTO){
         return (Compromisso) this.compromissoRepository.save(this.getCompromissoFromDTO(compromissoDTO));
     }
