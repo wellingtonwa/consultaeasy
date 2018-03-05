@@ -22,7 +22,7 @@ export class Agenda extends React.Component<IAgendaProps, null> {
     }
 
     handleOnDayClick = (...data) => {
-      console.log(data[0].date.format());
+
     }
 
     render() {

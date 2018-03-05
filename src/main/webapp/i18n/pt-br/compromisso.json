@@ -1,0 +1,24 @@
+{
+    "compromissoManagement": {
+        "home": {
+            "title": "Agenda",
+            "createLabel": "Adicionar Compromisso",
+            "createOrEditLabel": "Criar ou editar compromisso"
+        },
+        "created": "Novo compromisso foi criado com a identificação {{ param }}",
+        "updated": "Paciente com a identificação {{ param }} foi atualizado ",
+        "deleted": "Paciente com a identificação {{ param }} foi removido",
+        "delete": {
+            "question": "Você tem certeza que deseja excluir o paciente {{ nome }}?"
+        },
+        "detail": {
+            "title": "Paciente"
+        },
+        "nomeCompleto": "Nome Completo",
+        "dataNascimento": "Dt. de Nascimento",
+        "createdBy": "Criado por",
+        "createdDate": "Criado em",
+        "lastModifiedBy": "Alterado por",
+        "lastModifiedDate": "Alterado em"
+    }
+}
