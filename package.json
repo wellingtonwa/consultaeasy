@@ -45,6 +45,7 @@
   "devDependencies": {
     "@types/chai": "4.0.4",
     "@types/chai-enzyme": "0.6.3",
+    "@types/jquery": "^3.2.7",
     "@types/lodash": "4.14.80",
     "@types/mocha": "2.2.44",
     "@types/node": "8.0.47",

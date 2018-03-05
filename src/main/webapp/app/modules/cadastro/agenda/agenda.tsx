@@ -6,32 +6,30 @@ import 'font-awesome/css/font-awesome.min.css';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
 import { getCompromissos } from '../../../reducers/compromisso-management';
 
-export interface IAgendaState {
+export interface IAgendaProps {
+    getCompromissos: ICrudGetAction;
     compromissos: any[];
 }
 
-export interface IAgendaProps {
-    getCompromissos: ICrudGetAction;
-}
-
-export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
+export class Agenda extends React.Component<IAgendaProps, null> {
 
     constructor(props) {
         super(props);
-        this.state = {
-            compromissos: []
-        };
     }
 
     componentDidMount() {
         this.props.getCompromissos();
     }
 
+    handleOnDayClick = (...data) => {
+      console.log(data[0].date.format());
+    }
+
     render() {
-        const { compromissos } = this.state;
+        const { compromissos } = this.props;
         return(
             <div>
-                <Schedule events={compromissos}/>
+                <Schedule events={compromissos} onDayClick={this.handleOnDayClick}/>
             </div>
         );
     }

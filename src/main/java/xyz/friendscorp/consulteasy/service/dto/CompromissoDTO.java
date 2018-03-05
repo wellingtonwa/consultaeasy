@@ -17,6 +17,7 @@ public class CompromissoDTO {
     private String title;
     private Boolean allDay;
     private String descricao;
+    @NotNull
     private Instant start;
     private Instant end;
     private String backgroundColor;

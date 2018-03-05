@@ -12,7 +12,7 @@ import { clearAuthentication } from './reducers/authentication';
 import AppComponent from './app';
 import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/omega/theme.css';
-import $ from 'jquery';
+import * as $ from 'jquery';
 
 const devTools = process.env.NODE_ENV === 'development' ? <DevTools /> : null;
 
