@@ -14,7 +14,7 @@ import xyz.friendscorp.consulteasy.domain.User;
 import xyz.friendscorp.consulteasy.repository.CompromissoRepository;
 import xyz.friendscorp.consulteasy.repository.MarcadorRepository;
 import xyz.friendscorp.consulteasy.repository.PacienteRepository;
-import xyz.friendscorp.consulteasy.repository.UserRepository;
+import xyz.friendscorp.consulteasy.service.UserService;
 import xyz.friendscorp.consulteasy.service.dto.CompromissoDTO;
 import xyz.friendscorp.consulteasy.service.dto.MarcadorDTO;
 
@@ -25,12 +25,12 @@ public class CompromissoService {
     private CompromissoRepository compromissoRepository;
     private PacienteRepository pacienteRepository;
     private MarcadorRepository marcadorRepository;
-    private UserRepository userRepository;
-    
+    private UserService userService;
+
     public Compromisso getCompromissoFromDTO(CompromissoDTO compromissoDTO){
         Paciente paciente = pacienteRepository.getOne(compromissoDTO.getPaciente());
         Marcador marcador = marcadorRepository.getOne(compromissoDTO.getMarcador());
-        User user = userRepository.getOne(compromissoDTO.getUser());
+        User user = userService.getUserWithAuthorities().get();
         Compromisso compromisso = new Compromisso(compromissoDTO.getId()
         , compromissoDTO.getTitle(), compromissoDTO.getDescricao()
         , compromissoDTO.getStart(), compromissoDTO.getEnd()
@@ -38,15 +38,15 @@ public class CompromissoService {
         , paciente, user);
         return compromisso;
     }
-    
+
     public CompromissoService(CompromissoRepository compromissoRepository, PacienteRepository pacienteRepository,
-    MarcadorRepository marcadorRepository, UserRepository userRepository) {
+    MarcadorRepository marcadorRepository, UserService userService) {
         this.compromissoRepository = compromissoRepository;;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.pacienteRepository = pacienteRepository;
         this.marcadorRepository = marcadorRepository;
     }
-    
+
     public Compromisso createCompromisso(CompromissoDTO compromissoDTO){
         return (Compromisso) this.compromissoRepository.save(this.getCompromissoFromDTO(compromissoDTO));
     }

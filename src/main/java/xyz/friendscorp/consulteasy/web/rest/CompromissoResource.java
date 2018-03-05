@@ -44,7 +44,7 @@ public class CompromissoResource {
         List<CompromissoDTO> lista = this.compromissoService.getCompromissos(pageable).map(CompromissoDTO::new).getContent();
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
-    
+
     @PostMapping(path="/compromisso")
     @Timed
     public ResponseEntity<Compromisso> createCompromisso(@Valid @RequestBody CompromissoDTO compromissoDTO) throws URISyntaxException{
@@ -57,10 +57,10 @@ public class CompromissoResource {
 
     @PutMapping("/compromisso")
     public ResponseEntity<CompromissoDTO> updateCompromisso(@Valid @RequestBody CompromissoDTO compromissoDTO){
-        
+
         Optional<CompromissoDTO> updatedCompromisso = compromissoService.updateComprimisso(compromissoDTO)
         .map(CompromissoDTO::new);
-        
+
         return ResponseUtil.wrapOrNotFound(updatedCompromisso, HeaderUtil.createAlert("compromissoManagement.updated", compromissoDTO.getId().toString()));
     }
 }
