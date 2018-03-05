@@ -5,9 +5,11 @@ import java.time.Instant;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import xyz.friendscorp.consulteasy.domain.Compromisso;
 
 @AllArgsConstructor
+@ToString
 public class CompromissoDTO {
 
     private Long id;
