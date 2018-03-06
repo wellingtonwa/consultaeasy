@@ -1,15 +1,9 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { AvForm, AvInput, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
-import { ICrudGetAction, ICrudPutAction, Translate } from 'react-jhipster';
 import { Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { getCompromisso, updateCompromisso, createCompromisso } from '../../../reducers/compromisso-management';
 
 export default class AgendaAddCompromisso extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const { loading, isNew, compromisso, showModal, handleCloseFunction } = this.props;
