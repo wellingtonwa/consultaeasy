@@ -1,11 +1,14 @@
 package xyz.friendscorp.consulteasy.service.dto;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 import xyz.friendscorp.consulteasy.domain.Compromisso;
 
 @AllArgsConstructor
@@ -18,8 +21,10 @@ public class CompromissoDTO {
     private Boolean allDay;
     private String descricao;
     @NotNull
-    private Instant start;
-    private Instant end;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime start;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime end;
     private String backgroundColor;
     private Long paciente;
     private Long user;
@@ -32,8 +37,8 @@ public class CompromissoDTO {
         this.title = compromisso.getTitulo();
         this.descricao = compromisso.getDescricao();
         this.allDay = compromisso.getDiaTodo();
-        this.start = compromisso.getInicio();
-        this.end = compromisso.getTermino();
+        this.start = compromisso.getInicio().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        this.end = compromisso.getTermino().atZone(ZoneId.systemDefault()).toLocalDateTime();
         this.user = compromisso.getUser().getId();
         if (compromisso.getMarcador() != null) {
             this.marcador = compromisso.getMarcador().getId();
@@ -77,19 +82,19 @@ public class CompromissoDTO {
         this.descricao = descricao;
     }
 
-    public Instant getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(Instant start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public Instant getEnd() {
+    public LocalDateTime getEnd() {
         return end;
     }
 
-    public void setEnd(Instant end) {
+    public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 

@@ -1,5 +1,6 @@
 package xyz.friendscorp.consulteasy.service;
 
+import java.time.ZoneId;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -14,8 +15,6 @@ import xyz.friendscorp.consulteasy.domain.User;
 import xyz.friendscorp.consulteasy.repository.CompromissoRepository;
 import xyz.friendscorp.consulteasy.repository.MarcadorRepository;
 import xyz.friendscorp.consulteasy.repository.PacienteRepository;
-import xyz.friendscorp.consulteasy.service
-.UserService;
 import xyz.friendscorp.consulteasy.service.dto.CompromissoDTO;
 
 @Service
@@ -26,6 +25,15 @@ public class CompromissoService {
     private PacienteRepository pacienteRepository;
     private MarcadorRepository marcadorRepository;
     private UserService userService;
+
+    public CompromissoService(CompromissoRepository compromissoRepository, PacienteRepository pacienteRepository,
+    MarcadorRepository marcadorRepository, 
+    UserService userService) {
+        this.compromissoRepository = compromissoRepository;;
+        this.userService = userService;
+        this.pacienteRepository = pacienteRepository;
+        this.marcadorRepository = marcadorRepository;
+    }
     
     public Compromisso getCompromissoFromDTO(CompromissoDTO compromissoDTO){
         Paciente paciente = null;
@@ -37,19 +45,11 @@ public class CompromissoService {
         User user = userService.getUserWithAuthorities().get();
         Compromisso compromisso = new Compromisso(compromissoDTO.getId()
         , compromissoDTO.getTitle(), compromissoDTO.getDescricao()
-        , compromissoDTO.getStart(), compromissoDTO.getEnd()
+        , compromissoDTO.getStart().atZone(ZoneId.systemDefault()).toInstant()
+        , compromissoDTO.getEnd().atZone(ZoneId.systemDefault()).toInstant()
         , compromissoDTO.getAllDay(), marcador
         , paciente, user);
         return compromisso;
-    }
-
-    public CompromissoService(CompromissoRepository compromissoRepository, PacienteRepository pacienteRepository,
-    MarcadorRepository marcadorRepository, 
-    UserService userService) {
-        this.compromissoRepository = compromissoRepository;;
-        this.userService = userService;
-        this.pacienteRepository = pacienteRepository;
-        this.marcadorRepository = marcadorRepository;
     }
 
     public Compromisso createCompromisso(CompromissoDTO compromissoDTO){
@@ -64,8 +64,8 @@ public class CompromissoService {
         return Optional.of(compromissoRepository.getOne(compromissoDTO.getId()))
             .map(compromisso -> {
                 compromisso.setTitulo(compromissoDTO.getTitle());
-                compromisso.setInicio(compromissoDTO.getStart());
-                compromisso.setTermino(compromissoDTO.getEnd());
+                compromisso.setInicio(compromissoDTO.getStart().atZone(ZoneId.systemDefault()).toInstant());
+                compromisso.setTermino(compromissoDTO.getEnd().atZone(ZoneId.systemDefault()).toInstant());
                 compromisso.setDescricao(compromissoDTO.getDescricao());
                 compromisso.setDiaTodo(compromissoDTO.getAllDay());
                 if(compromissoDTO.getMarcador()!=null){
