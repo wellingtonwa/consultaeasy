@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Schedule } from 'primereact/components/schedule/Schedule';
-import 'fullcalendar/dist/fullcalendar.css';
-import 'font-awesome/css/font-awesome.min.css';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
-import { getCompromissos } from '../../../reducers/compromisso-management';
+import { getCompromissos, createCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
 
 export interface IAgendaProps {
     getCompromissos: ICrudGetAction;
+    createCompromisso: ICrudPutAction;
     compromissos: any[];
 }
 

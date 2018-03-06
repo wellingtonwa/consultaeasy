@@ -14,11 +14,9 @@
         "detail": {
             "title": "Paciente"
         },
-        "nomeCompleto": "Nome Completo",
-        "dataNascimento": "Dt. de Nascimento",
-        "createdBy": "Criado por",
-        "createdDate": "Criado em",
-        "lastModifiedBy": "Alterado por",
-        "lastModifiedDate": "Alterado em"
+        "titulo": "Título",
+        "descricao": "Descrição",
+        "dataInicio": "Dt. Início",
+        "dataTermino": "Dt. Término"
     }
 }
