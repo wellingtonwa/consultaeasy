@@ -1,8 +1,12 @@
 package xyz.friendscorp.consulteasy.service.dto;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;
@@ -18,8 +22,10 @@ public class CompromissoDTO {
     private Boolean allDay;
     private String descricao;
     @NotNull
-    private Instant start;
-    private Instant end;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime start;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime end;
     private String backgroundColor;
     private Long paciente;
     private Long user;
