@@ -24,7 +24,6 @@ export class PacienteManagementDeleteDialog extends React.Component<IPacienteMan
     this.state = {
       showModal: true
     };
-    console.log(this.props.match);
   }
 
   componentDidMount() {

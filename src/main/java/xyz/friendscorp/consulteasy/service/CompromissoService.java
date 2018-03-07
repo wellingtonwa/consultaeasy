@@ -27,14 +27,14 @@ public class CompromissoService {
     private UserService userService;
 
     public CompromissoService(CompromissoRepository compromissoRepository, PacienteRepository pacienteRepository,
-    MarcadorRepository marcadorRepository, 
+    MarcadorRepository marcadorRepository,
     UserService userService) {
         this.compromissoRepository = compromissoRepository;;
         this.userService = userService;
         this.pacienteRepository = pacienteRepository;
         this.marcadorRepository = marcadorRepository;
     }
-    
+
     public Compromisso getCompromissoFromDTO(CompromissoDTO compromissoDTO){
         Paciente paciente = null;
         Marcador marcador = null;
@@ -65,7 +65,7 @@ public class CompromissoService {
         return Optional.of(compromissoRepository.getOne(compromissoDTO.getId()))
             .map(compromisso -> {
                 compromisso.setTitulo(compromissoDTO.getTitle());
-                compromisso.setInicio(compromissoDTO.getStart().atZone(ZoneId.systemDefault()).toInstant());
+                compromisso.setInicio(compromissoDTO.getStartInstant());
                 compromisso.setTermino(compromissoDTO.getEndInstant());
                 compromisso.setDescricao(compromissoDTO.getDescricao());
                 compromisso.setDiaTodo(compromissoDTO.getAllDay());
@@ -77,6 +77,10 @@ public class CompromissoService {
                 }
                 return compromisso;
             });
+    }
+
+    public Compromisso getCompromisso(Long idCompromisso){
+        return compromissoRepository.getOne(idCompromisso);
     }
 
 }

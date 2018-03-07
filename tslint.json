@@ -191,7 +191,7 @@
     },
 
     "ban-types": [true, ["Object", "Use {} instead."]],
-    "no-submodule-imports": [true, "uuid/v4", "react-icons/lib/fa", "primereact/resources/themes/omega/theme.css", "primereact/resources/primereact.min.css"],
+    "no-submodule-imports": [true, "uuid/v4", "react-icons/lib/fa", "primereact/resources/themes/omega/theme.css", "primereact/resources/primereact.min.css", "fullcalendar/dist/locale/pt-br.js", "fullcalendar/dist/fullcalendar.css", "font-awesome/css/font-awesome.min.css"],
 
     "ter-arrow-body-style": [true],
     "ter-no-irregular-whitespace": [true],

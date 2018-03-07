@@ -11,7 +11,7 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
   }
 
   render() {
-    const { loading, isNew, compromisso, showModal, handleCloseFunction, 
+    const { loading, isNew, compromisso, showModal, handleCloseFunction,
             handleSaveCompromisso } = this.props;
     return (
       <Modal isOpen={showModal} size="lg" toggle={handleCloseFunction}
@@ -33,21 +33,21 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
               }
               <AvGroup>
                 <Label for="title"><Translate contentKey="compromissoManagement.titulo">Título</Translate></Label>
-                <AvInput name="title" className="form-control" value={compromisso.title ? compromisso.title : null} autoFocus required />
+                <AvInput name="title" className="form-control" value={compromisso.title ? compromisso.title : ''} autoFocus required />
                 <AvFeedback>Este campo é obrigatório</AvFeedback>
               </AvGroup>
               <AvGroup>
                 <Label for="descricao"><Translate contentKey="compromissoManagement.descricao">Descricao</Translate></Label>
-                <AvInput name="descricao" className="form-control" value={compromisso.descricao ? compromisso.descricao : null} />
+                <AvInput name="descricao" className="form-control" value={compromisso.descricao ? compromisso.descricao : ''} />
               </AvGroup>
               <AvGroup>
                 <Label for="start"><Translate contentKey="compromissoManagement.dataInicio">First Name</Translate></Label>
-                <AvInput type="datetime-local" className="form-control" value={compromisso.start ? compromisso.start : null} name="start" required />
+                <AvInput type="datetime-local" className="form-control" value={compromisso.start ? compromisso.start : ''} name="start" required />
                 <AvFeedback>Este campo é obrigatório</AvFeedback>
               </AvGroup>
               <AvGroup>
                 <Label for="end"><Translate contentKey="compromissoManagement.dataTermino">First Name</Translate></Label>
-                <AvInput type="datetime-local" className="form-control" value={compromisso.end ? compromisso.end : null} name="end" />
+                <AvInput type="datetime-local" className="form-control" value={compromisso.end ? compromisso.end : ''} name="end" />
               </AvGroup>
             </ModalBody>
             <ModalFooter>

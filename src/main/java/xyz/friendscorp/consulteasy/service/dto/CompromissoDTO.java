@@ -40,9 +40,9 @@ public class CompromissoDTO {
         this.title = compromisso.getTitulo();
         this.descricao = compromisso.getDescricao();
         this.allDay = compromisso.getDiaTodo();
-        if (compromisso.getInicio()!=null) 
+        if (compromisso.getInicio()!=null)
         this.start = compromisso.getInicio().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        if (compromisso.getTermino()!=null) 
+        if (compromisso.getTermino()!=null)
         this.end = compromisso.getTermino().atZone(ZoneId.systemDefault()).toLocalDateTime();
         this.user = compromisso.getUser().getId();
         if (compromisso.getMarcador() != null) {
@@ -89,6 +89,10 @@ public class CompromissoDTO {
 
     public LocalDateTime getStart() {
         return start;
+    }
+
+    public Instant getStartInstant() {
+        return start.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     public void setStart(LocalDateTime start) {

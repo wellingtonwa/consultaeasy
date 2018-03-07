@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,11 @@ public class CompromissoResource {
     public ResponseEntity<List<CompromissoDTO>> getAllCompromissos(Pageable pageable) {
         List<CompromissoDTO> lista = this.compromissoService.getCompromissos(pageable).map(CompromissoDTO::new).getContent();
         return new ResponseEntity<>(lista, HttpStatus.OK);
+    }
+
+    @GetMapping("/compromisso/{idCompromisso}")
+    public ResponseEntity<CompromissoDTO> getCompromisso(@PathVariable Long idCompromisso) {
+        return new ResponseEntity<>(new CompromissoDTO(this.compromissoService.getCompromisso(idCompromisso)), HttpStatus.OK);
     }
 
     @PostMapping(path="/compromisso")
