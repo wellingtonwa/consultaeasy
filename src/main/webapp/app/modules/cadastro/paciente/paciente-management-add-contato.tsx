@@ -43,7 +43,6 @@ export class ContatoManagementDialog extends React.Component<IContatoManagementM
   }
 
   saveContato = (event, errors, values) => {
-    console.log(values);
     if (errors.length === 0) {
       values.id ? this.props.createContato(values.idPaciente, values) : this.props.updateContato(values.idPaciente, values);
       this.props.createContato(values.idPaciente, values);

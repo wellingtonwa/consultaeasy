@@ -6,6 +6,9 @@ import java.time.ZoneId;
 
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
+
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,7 +40,9 @@ public class CompromissoDTO {
         this.title = compromisso.getTitulo();
         this.descricao = compromisso.getDescricao();
         this.allDay = compromisso.getDiaTodo();
+        if (compromisso.getInicio()!=null) 
         this.start = compromisso.getInicio().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        if (compromisso.getTermino()!=null) 
         this.end = compromisso.getTermino().atZone(ZoneId.systemDefault()).toLocalDateTime();
         this.user = compromisso.getUser().getId();
         if (compromisso.getMarcador() != null) {
@@ -92,6 +97,13 @@ public class CompromissoDTO {
 
     public LocalDateTime getEnd() {
         return end;
+    }
+
+    public Instant getEndInstant() {
+        if(this.end!=null)
+            return end.atZone(ZoneId.systemDefault()).toInstant();
+        else
+            return null;
     }
 
     public void setEnd(LocalDateTime end) {

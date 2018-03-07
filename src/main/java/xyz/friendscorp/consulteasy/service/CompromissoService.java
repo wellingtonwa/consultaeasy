@@ -43,10 +43,11 @@ public class CompromissoService {
         if(compromissoDTO.getMarcador()!=null)
             marcador = marcadorRepository.getOne(compromissoDTO.getMarcador());
         User user = userService.getUserWithAuthorities().get();
+        System.out.println(user);
         Compromisso compromisso = new Compromisso(compromissoDTO.getId()
         , compromissoDTO.getTitle(), compromissoDTO.getDescricao()
         , compromissoDTO.getStart().atZone(ZoneId.systemDefault()).toInstant()
-        , compromissoDTO.getEnd().atZone(ZoneId.systemDefault()).toInstant()
+        , compromissoDTO.getEndInstant()
         , compromissoDTO.getAllDay(), marcador
         , paciente, user);
         return compromisso;
@@ -65,7 +66,7 @@ public class CompromissoService {
             .map(compromisso -> {
                 compromisso.setTitulo(compromissoDTO.getTitle());
                 compromisso.setInicio(compromissoDTO.getStart().atZone(ZoneId.systemDefault()).toInstant());
-                compromisso.setTermino(compromissoDTO.getEnd().atZone(ZoneId.systemDefault()).toInstant());
+                compromisso.setTermino(compromissoDTO.getEndInstant());
                 compromisso.setDescricao(compromissoDTO.getDescricao());
                 compromisso.setDiaTodo(compromissoDTO.getAllDay());
                 if(compromissoDTO.getMarcador()!=null){
