@@ -47,7 +47,7 @@ public class CompromissoDTO {
         this.user = compromisso.getUser().getId();
         if (compromisso.getMarcador() != null) {
             this.marcador = compromisso.getMarcador().getId();
-            this.backgroundColor = compromisso.getMarcador().getCor();
+            this.backgroundColor = "#"+compromisso.getMarcador().getCor();
         }
         if (compromisso.getPaciente() != null) {
             this.paciente = compromisso.getPaciente().getId();

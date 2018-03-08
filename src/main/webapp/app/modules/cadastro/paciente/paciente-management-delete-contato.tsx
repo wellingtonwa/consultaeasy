@@ -29,7 +29,6 @@ export class ContatoDeleteDialog extends React.Component<IContatoManagementProps
     }
 
     handleClose = (event, id) => {
-        console.log(event);
         if (id) {
             this.props.history.push(`/cadastro/paciente/${id}/edit`);
         } else {

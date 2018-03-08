@@ -17,6 +17,7 @@
         "titulo": "Título",
         "descricao": "Descrição",
         "dataInicio": "Dt. Início",
-        "dataTermino": "Dt. Término"
+        "dataTermino": "Dt. Término",
+        "marcador": "Marcador"
     }
 }

@@ -4,17 +4,21 @@ import { Schedule } from 'primereact/components/schedule/Schedule';
 import 'fullcalendar/dist/fullcalendar.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
-import { getCompromissos, getCompromisso, createCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
+import { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
+import { getMarcadores } from '../../../reducers/marcador-management';
 import { AgendaAddCompromisso } from './agenda-add-compromisso';
 import { Button } from 'reactstrap';
 import 'fullcalendar/dist/locale/pt-br.js';
 
 export interface IAgendaProps {
     getCompromissos: ICrudGetAction;
+    getMarcadores: ICrudGetAction;
     getCompromisso: ICrudGetAction;
     createCompromisso: ICrudPutAction;
+    _updateCompromisso: ICrudPutAction;
     updateCompromisso: ICrudPutAction;
     compromissos: any[];
+    marcadores: any[];
     compromisso: any;
     loading: boolean;
     updating: boolean;
@@ -48,6 +52,7 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
 
     componentDidMount() {
         this.props.getCompromissos();
+        this.props.getMarcadores();
     }
 
     handleOnDayClick = (...data) => {
@@ -87,30 +92,37 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
         this.props.getCompromissos();
     }
 
-    ajustarInicioFimEvento = async (delta, event) => {
-        const compromisso = await this.props.getCompromisso(event.id);
+    ajustarInicioFimEvento = (delta, event) => {
+        let compromisso = event;
         event.start.add(delta.days, 'days');
         event.start.add(delta.months, 'months');
         event.start.add(delta.hours, 'hours');
-        compromisso.value.data.start = event.start.format(FORMAT_EVENT_DATETIME);
-        if (compromisso.value.data.end) {
+        event.start.add(delta.minutes, 'minutes');
+        compromisso.start = event.start.format(FORMAT_EVENT_DATETIME);
+        if (compromisso.end) {
           event.end.add(delta.days, 'days');
           event.end.add(delta.months, 'months');
           event.end.add(delta.hours, 'hours');
-          compromisso.value.data.end = event.end.format(FORMAT_EVENT_DATETIME);
+          event.end.add(delta.minutes, 'minutes');
+          compromisso.end = event.end.format(FORMAT_EVENT_DATETIME);
         }
-        return compromisso.value.data;
+        compromisso = { id: compromisso.id, title: compromisso.title, descricao: compromisso.descricao, start: compromisso.start,
+                        end: compromisso.end, marcador: compromisso.marcador, user: compromisso.user, paciente: compromisso.paciente};
+        return compromisso;
     }
 
-    handleEventDrop = async (...data) => {
-        const compromisso = await this.ajustarInicioFimEvento(data[0].delta, data[0].event);
-        console.log(compromisso);
+    handleEventDrop = (...data) => {
+        const compromisso = this.ajustarInicioFimEvento(data[0].delta, data[0].event);
         // const compromisso = { title: ac.title, descricao: ac.descricao, start: ac.start, end: ac.end };
-        this.props.updateCompromisso(compromisso);
+        this.props._updateCompromisso(compromisso);
+    }
+
+    handleEventResizeStop = (...data) => {
+        this.handleEventDrop(data[0]);
     }
 
     render() {
-        const { compromissos, loading, updating } = this.props;
+        const { compromissos, loading, updating, marcadores } = this.props;
         const { showCadastroCompromisso, compromisso, isNew } = this.state;
         return(
             <div>
@@ -118,9 +130,11 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
                     Adicionar Compromisso
                 </Button>
                 <Schedule header={header} events={compromissos} onDayClick={this.handleOnDayClick}
-                 onEventClick={this.handleOnEventClick} onEventDrop={this.handleEventDrop}/>
+                onEventClick={this.handleOnEventClick} onEventDrop={this.handleEventDrop}
+                onEventResize={this.handleEventResizeStop}/>
                 <AgendaAddCompromisso showModal={showCadastroCompromisso} handleCloseFunction={this.handleCloseModal}
                 compromisso={compromisso} loading={loading} updating={updating} handleSaveCompromisso={this.saveCompromisso}
+                marcadores={marcadores}
                 isNew={isNew}/>
             </div>
         );
@@ -130,9 +144,12 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
 
 const mapStateToProps = storeState => ({
     compromissos: storeState.compromissoManagement.compromissos,
-    compromisso: storeState.compromissoManagement.compromisso
+    compromisso: storeState.compromissoManagement.compromisso,
+    marcadores: storeState.marcadorManagement.marcadores,
+    loading: storeState.compromissoManagement.loading,
+    updating: storeState.compromissoManagement.updating
 });
 
-const mapDispatchToProps = { getCompromissos, getCompromisso, createCompromisso, updateCompromisso };
+const mapDispatchToProps = { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, getMarcadores, updateCompromisso };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Agenda);
