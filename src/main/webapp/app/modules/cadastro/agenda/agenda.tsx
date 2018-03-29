@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { Schedule } from 'primereact/components/schedule/Schedule';
 import 'fullcalendar/dist/fullcalendar.css';
 import 'font-awesome/css/font-awesome.min.css';
+import update from 'immutability-helper';
+import * as _ from 'lodash';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
-import { getCompromissos, getCompromisso, createCompromisso, _createCompromisso, _updateCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
+import { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
 import { getMarcadores } from '../../../reducers/marcador-management';
 import { AgendaAddCompromisso } from './agenda-add-compromisso';
 import { Button } from 'reactstrap';
@@ -15,7 +17,6 @@ export interface IAgendaProps {
     getMarcadores: ICrudGetAction;
     getCompromisso: ICrudGetAction;
     createCompromisso: ICrudPutAction;
-    _createCompromisso: ICrudPutAction;
     _updateCompromisso: ICrudPutAction;
     updateCompromisso: ICrudPutAction;
     compromissos: any[];
@@ -40,6 +41,8 @@ const header = {
 };
 
 export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
+
+    agenda;
 
     constructor(props) {
         super(props);
@@ -87,7 +90,7 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
 
     saveCompromisso = (event, errors, values) => {
         if (errors.length === 0) {
-            values.id ? this.props._updateCompromisso(values) : this.props._createCompromisso(values);
+            values.id ? this.props.updateCompromisso(values) : this.props.createCompromisso(values);
             this.handleCloseModal();
         }
         this.props.getCompromissos();
@@ -95,6 +98,7 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
 
     ajustarInicioFimEvento = (delta, event) => {
         let compromisso = event;
+        const evento = _.cloneDeep(event);
         event.start.add(delta.days, 'days');
         event.start.add(delta.months, 'months');
         event.start.add(delta.hours, 'hours');
@@ -109,13 +113,14 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
         }
         compromisso = { id: compromisso.id, title: compromisso.title, descricao: compromisso.descricao, start: compromisso.start,
                         end: compromisso.end, marcador: compromisso.marcador, user: compromisso.user, paciente: compromisso.paciente};
-        return compromisso;
+        return [ compromisso, evento ];
     }
 
     handleEventDrop = (...data) => {
         const compromisso = this.ajustarInicioFimEvento(data[0].delta, data[0].event);
         // const compromisso = { title: ac.title, descricao: ac.descricao, start: ac.start, end: ac.end };
-        this.props._updateCompromisso(compromisso);
+        this.props._updateCompromisso(compromisso[0]);
+        this.agenda.schedule.fullCalendar('updateEvent', compromisso[1]);
     }
 
     handleEventResizeStop = (...data) => {
@@ -132,7 +137,7 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
                 </Button>
                 <Schedule header={header} events={compromissos} onDayClick={this.handleOnDayClick}
                 onEventClick={this.handleOnEventClick} onEventDrop={this.handleEventDrop}
-                onEventResize={this.handleEventResizeStop}/>
+                onEventResize={this.handleEventResizeStop} ref={input => this.agenda = input}/>
                 <AgendaAddCompromisso showModal={showCadastroCompromisso} handleCloseFunction={this.handleCloseModal}
                 compromisso={compromisso} loading={loading} updating={updating} handleSaveCompromisso={this.saveCompromisso}
                 marcadores={marcadores}
@@ -151,6 +156,6 @@ const mapStateToProps = storeState => ({
     updating: storeState.compromissoManagement.updating
 });
 
-const mapDispatchToProps = { getCompromissos, getCompromisso, createCompromisso, _createCompromisso, _updateCompromisso, getMarcadores, updateCompromisso };
+const mapDispatchToProps = { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, getMarcadores, updateCompromisso };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Agenda);
