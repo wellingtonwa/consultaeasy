@@ -113,6 +113,17 @@ export const createCompromisso: ICrudPutAction = compromisso => async dispatch =
   dispatch(getCompromissos());
   return result;
 };
+export const _createCompromisso: ICrudPutAction = compromisso => dispatch => {
+  const result = dispatch({
+    type: ACTION_TYPES.CREATE_COMPROMISSO,
+    meta: {
+      successMessage: messages.DATA_CREATE_SUCCESS_ALERT,
+      errorMessage: messages.DATA_UPDATE_ERROR_ALERT
+    },
+    payload: axios.post(apiUrl, compromisso)
+  });
+  return result;
+};
 
 export const updateCompromisso: ICrudPutAction = compromisso => async dispatch => {
   const result = await dispatch({

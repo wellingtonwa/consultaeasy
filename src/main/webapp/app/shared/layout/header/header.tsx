@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Translate } from 'react-jhipster';
 import {
   Navbar, Nav, NavItem, NavLink, NavbarToggler, NavbarBrand, Collapse,
-  UncontrolledNavDropdown, DropdownToggle, DropdownMenu, DropdownItem
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
 import {
     FaHome, FaThList, FaUserPlus, FaUser, FaFlag, FaHeart,
@@ -102,7 +102,7 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                 </NavLink>
               </NavItem>
               {isAuthenticated ? [
-                <UncontrolledNavDropdown key="entities">
+                <UncontrolledDropdown key="entities">
                   <DropdownToggle nav caret className="d-flex align-items-center">
                     <FaThList />
                     <span>Cadastros</span>
@@ -125,8 +125,8 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                   <DropdownMenu right>
                     {entityMenuItems}
                   </DropdownMenu> */}
-                </UncontrolledNavDropdown>,
-                <UncontrolledNavDropdown key="admin">
+                </UncontrolledDropdown>,
+                <UncontrolledDropdown key="admin">
                   <DropdownToggle nav caret className="d-flex align-items-center">
                     <FaUserPlus />
                     <span>Administration</span>
@@ -134,10 +134,10 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                   <DropdownMenu right style={{ width: '120%' }}>
                     {adminMenuItems}
                   </DropdownMenu>
-                </UncontrolledNavDropdown>
+                </UncontrolledDropdown>
               ] : null}
               { locales.length > 1 ?
-                <UncontrolledNavDropdown>
+                <UncontrolledDropdown>
                   <DropdownToggle nav caret className="d-flex align-items-center">
                     <FaFlag />
                     <span>{currentLocale.toUpperCase()}</span>
@@ -145,9 +145,9 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                   <DropdownMenu right>
                     {locales.map(lang => <DropdownItem key={lang} value={lang} onClick={this.handleLocaleChange}>{lang.toUpperCase()}</DropdownItem>)}
                   </DropdownMenu>
-                </UncontrolledNavDropdown> : null
+                </UncontrolledDropdown> : null
               }
-              <UncontrolledNavDropdown>
+              <UncontrolledDropdown>
                 <DropdownToggle nav caret className="d-flex align-items-center">
                   <FaUser />
                   <span>Account</span>
@@ -155,7 +155,7 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                 <DropdownMenu right>
                   {accountMenuItems}
                 </DropdownMenu>
-              </UncontrolledNavDropdown>
+              </UncontrolledDropdown>
             </Nav>
           </Collapse>
         </Navbar>

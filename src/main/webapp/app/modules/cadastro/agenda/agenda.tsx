@@ -4,7 +4,7 @@ import { Schedule } from 'primereact/components/schedule/Schedule';
 import 'fullcalendar/dist/fullcalendar.css';
 import 'font-awesome/css/font-awesome.min.css';
 import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
-import { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
+import { getCompromissos, getCompromisso, createCompromisso, _createCompromisso, _updateCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
 import { getMarcadores } from '../../../reducers/marcador-management';
 import { AgendaAddCompromisso } from './agenda-add-compromisso';
 import { Button } from 'reactstrap';
@@ -15,6 +15,7 @@ export interface IAgendaProps {
     getMarcadores: ICrudGetAction;
     getCompromisso: ICrudGetAction;
     createCompromisso: ICrudPutAction;
+    _createCompromisso: ICrudPutAction;
     _updateCompromisso: ICrudPutAction;
     updateCompromisso: ICrudPutAction;
     compromissos: any[];
@@ -86,7 +87,7 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
 
     saveCompromisso = (event, errors, values) => {
         if (errors.length === 0) {
-            values.id ? this.props.updateCompromisso(values) : this.props.createCompromisso(values);
+            values.id ? this.props._updateCompromisso(values) : this.props._createCompromisso(values);
             this.handleCloseModal();
         }
         this.props.getCompromissos();
@@ -150,6 +151,6 @@ const mapStateToProps = storeState => ({
     updating: storeState.compromissoManagement.updating
 });
 
-const mapDispatchToProps = { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, getMarcadores, updateCompromisso };
+const mapDispatchToProps = { getCompromissos, getCompromisso, createCompromisso, _createCompromisso, _updateCompromisso, getMarcadores, updateCompromisso };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Agenda);

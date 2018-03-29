@@ -15,13 +15,13 @@ import xyz.friendscorp.consulteasy.repository.MarcadorRepository;
 import xyz.friendscorp.consulteasy.service.dto.MarcadorDTO;
 
 /**
- * 
+ *
  * @author wellington
  */
 @Service
 @Transactional
 public class MarcadorService {
-    
+
     private final MarcadorRepository marcadorRepository;
     private final UserService userService;
 
@@ -29,21 +29,21 @@ public class MarcadorService {
         this.marcadorRepository = marcadorRepository;
         this.userService = userService;
     }
-    
+
     public Page<MarcadorDTO> findAll(Pageable pageable){
-        return marcadorRepository.findAll(pageable).map(MarcadorDTO::new);
+        return marcadorRepository.findAllByCurrentUser(pageable).map(MarcadorDTO::new);
     }
-    
+
     public Marcador createMarcador(MarcadorDTO marcadorDTO){
         Marcador marcador = new Marcador(null, marcadorDTO.getNome(), marcadorDTO.getCor(), userService.getUserWithAuthorities().get());
         marcador = marcadorRepository.save(marcador);
         return marcador;
     }
-    
+
     public MarcadorDTO getMarcador(Long id){
         return Optional.of(marcadorRepository.getOne(id)).map(MarcadorDTO::new).get();
     }
-    
+
     public Optional<MarcadorDTO> updateMarcador(MarcadorDTO marcadorDTO){
         return Optional.of(marcadorRepository.getOne(marcadorDTO.getId()))
                 .map(m -> {

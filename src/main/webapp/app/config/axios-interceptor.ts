@@ -1,5 +1,10 @@
 import axios from 'axios';
-import { getBasePath, Storage } from 'react-jhipster';
+// import { getBasePath, Storage } from 'react-jhipster';
+import { Storage } from 'react-jhipster';
+
+function getBasePath() {
+  return 'http://friendscorp.ddns.net:8080';
+}
 
 const TIMEOUT = 1000000; // 10000
 const setupAxiosInterceptors = onUnauthenticated => {
