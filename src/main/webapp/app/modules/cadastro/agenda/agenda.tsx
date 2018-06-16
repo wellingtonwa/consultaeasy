@@ -1,15 +1,20 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Schedule } from 'primereact/components/schedule/Schedule';
+import {connect} from 'react-redux';
+import {Schedule} from 'primereact/components/schedule/Schedule';
 import 'fullcalendar/dist/fullcalendar.css';
 import 'font-awesome/css/font-awesome.min.css';
-import update from 'immutability-helper';
 import * as _ from 'lodash';
-import { Translate, ICrudGetAction, ICrudPutAction } from 'react-jhipster';
-import { getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, updateCompromisso } from '../../../reducers/compromisso-management';
-import { getMarcadores } from '../../../reducers/marcador-management';
-import { AgendaAddCompromisso } from './agenda-add-compromisso';
-import { Button } from 'reactstrap';
+import {ICrudGetAction, ICrudPutAction, Translate} from 'react-jhipster';
+import {
+  _updateCompromisso,
+  createCompromisso,
+  getCompromisso,
+  getCompromissos,
+  updateCompromisso
+} from '../../../reducers/compromisso-management';
+import {getMarcadores} from '../../../reducers/marcador-management';
+import {AgendaAddCompromisso} from './agenda-add-compromisso';
+import {Button} from 'reactstrap';
 import 'fullcalendar/dist/locale/pt-br.js';
 
 export interface IAgendaProps {
@@ -22,6 +27,7 @@ export interface IAgendaProps {
     compromissos: any[];
     marcadores: any[];
     compromisso: any;
+    match: any;
     loading: boolean;
     updating: boolean;
 }
@@ -51,12 +57,30 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
             compromisso: { start: '' },
             isNew: true
         };
-
     }
 
     componentDidMount() {
         this.props.getCompromissos();
         this.props.getMarcadores();
+        console.log("Did mount");
+        this.checkUrl();
+    }
+
+    checkUrl = () => {
+      if(this.props.match.url.indexOf("edit")>=0 && this.props.match.params.id){
+        this.props.getCompromisso(this.props.match.params.id);
+        console.log("chackUrl Edit");
+      }
+    };
+
+    componentDidUpdate(prevProps, prevState, snapsho){
+      if(this.props.match.url.indexOf("edit")>=0 && this.props.match.params.id) {
+        if(this.props.compromisso && this.props.compromisso.id == this.props.match.params.id
+         && this.state.compromisso.id != this.props.compromisso.id){
+          this.setState({ compromisso: this.props.compromisso, isNew: false });
+          this.handleOpenModal();
+        }
+      }
     }
 
     handleOnDayClick = (...data) => {
@@ -64,13 +88,13 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
         compromisso.start = data[0].date.format(FORMAT_EVENT_DATETIME);
         this.setState({ compromisso, isNew: true });
         this.handleOpenModal();
-    }
+    };
 
     addCompromisso = () => {
         const compromisso = { start: '' };
         this.setState({ compromisso, isNew: true });
         this.handleOpenModal();
-    }
+    };
 
     handleOnEventClick = (...data) => {
         const compromisso = data[0].calEvent;
@@ -78,54 +102,74 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
         compromisso.end = compromisso.end ? compromisso.end.format(FORMAT_EVENT_DATETIME) : null;
         this.setState({ compromisso, isNew: false });
         this.handleOpenModal();
-    }
+    };
 
     handleOpenModal = () => {
         this.setState({ showCadastroCompromisso: true });
-    }
+    };
 
     handleCloseModal = () => {
         this.setState({ showCadastroCompromisso: false });
-    }
+    };
 
     saveCompromisso = (event, errors, values) => {
         if (errors.length === 0) {
-            values.id ? this.props.updateCompromisso(values) : this.props.createCompromisso(values);
+            values.id ? this.props._updateCompromisso(values) : this.props.createCompromisso(values);
             this.handleCloseModal();
+            if(!this.state.isNew) {
+
+              const marcador = this.props.marcadores.filter(marc => marc.id === values.marcador)[0];
+              let compromissoDaAgenda = this.agenda.schedule.fullCalendar('clientEvents', this.state.compromisso.id)[0];
+              Object.assign(compromissoDaAgenda, values);
+
+              compromissoDaAgenda.backgroundColor = '#'+marcador.cor;
+              console.log(compromissoDaAgenda, marcador);
+              this.agenda.schedule.fullCalendar('updateEvent', compromissoDaAgenda)
+            }
         }
         this.props.getCompromissos();
-    }
+    };
 
     ajustarInicioFimEvento = (delta, event) => {
         let compromisso = event;
         const evento = _.cloneDeep(event);
-        event.start.add(delta.days, 'days');
-        event.start.add(delta.months, 'months');
-        event.start.add(delta.hours, 'hours');
-        event.start.add(delta.minutes, 'minutes');
-        compromisso.start = event.start.format(FORMAT_EVENT_DATETIME);
+        evento.start.add(delta.days, 'days');
+        evento.start.add(delta.months, 'months');
+        evento.start.add(delta.hours, 'hours');
+        evento.start.add(delta.minutes, 'minutes');
+        compromisso.start = evento.start.format(FORMAT_EVENT_DATETIME);
         if (compromisso.end) {
-          event.end.add(delta.days, 'days');
-          event.end.add(delta.months, 'months');
-          event.end.add(delta.hours, 'hours');
-          event.end.add(delta.minutes, 'minutes');
-          compromisso.end = event.end.format(FORMAT_EVENT_DATETIME);
+          evento.end.add(delta.days, 'days');
+          evento.end.add(delta.months, 'months');
+          evento.end.add(delta.hours, 'hours');
+          evento.end.add(delta.minutes, 'minutes');
+          compromisso.end = evento.end.format(FORMAT_EVENT_DATETIME);
         }
         compromisso = { id: compromisso.id, title: compromisso.title, descricao: compromisso.descricao, start: compromisso.start,
                         end: compromisso.end, marcador: compromisso.marcador, user: compromisso.user, paciente: compromisso.paciente};
-        return [ compromisso, evento ];
-    }
+        return [ compromisso, event ];
+    };
 
     handleEventDrop = (...data) => {
         const compromisso = this.ajustarInicioFimEvento(data[0].delta, data[0].event);
         // const compromisso = { title: ac.title, descricao: ac.descricao, start: ac.start, end: ac.end };
         this.props._updateCompromisso(compromisso[0]);
-        this.agenda.schedule.fullCalendar('updateEvent', compromisso[1]);
-    }
+        // this.agenda.schedule.fullCalendar('updateEvent', compromisso[1]);
+    };
 
     handleEventResizeStop = (...data) => {
         this.handleEventDrop(data[0]);
-    }
+    };
+
+    deleteFunction = () => {
+
+    };
+
+    testeAtualizacao = () => {
+      let compromisso = this.state.compromisso;
+      compromisso.title = 'Testando';
+      this.agenda.schedule.fullCalendar("updateEvent", this.state.compromisso);
+    };
 
     render() {
         const { compromissos, loading, updating, marcadores } = this.props;
@@ -135,12 +179,15 @@ export class Agenda extends React.Component<IAgendaProps, IAgendaState> {
                 <Button onClick={this.addCompromisso}>
                     Adicionar Compromisso
                 </Button>
+                <Button onClick={this.testeAtualizacao}>
+                    Teste atualização
+                </Button>
                 <Schedule header={header} events={compromissos} onDayClick={this.handleOnDayClick}
                 onEventClick={this.handleOnEventClick} onEventDrop={this.handleEventDrop}
                 onEventResize={this.handleEventResizeStop} ref={input => this.agenda = input}/>
                 <AgendaAddCompromisso showModal={showCadastroCompromisso} handleCloseFunction={this.handleCloseModal}
                 compromisso={compromisso} loading={loading} updating={updating} handleSaveCompromisso={this.saveCompromisso}
-                marcadores={marcadores}
+                marcadores={marcadores} handleDeleteFunction={this.deleteFunction}
                 isNew={isNew}/>
             </div>
         );

@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { Translate } from 'react-jhipster';
 import { AvForm, AvInput, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
-import { Label, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { getCompromisso, updateCompromisso, createCompromisso } from '../../../reducers/compromisso-management';
 import SelectMarcadorCompromisso from './partial/select-marcador';
+import {Button} from "primereact/components/button/Button";
 
 
 export class AgendaAddCompromisso extends React.Component<any, any> {
@@ -11,22 +12,22 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
   constructor(props) {
     super(props);
     this.state = { compromisso: props.compromisso };
-  }
+  };
 
   componentWillReceiveProps(next) {
     const { compromisso } = next;
     this.setState({ compromisso });
-  }
+  };
 
   onChangeMarcador = event => {
     const { compromisso } = this.state;
     compromisso.marcador = event.value;
     this.setState({ compromisso });
-  }
+  };
 
   render() {
     const { loading, isNew, showModal, handleCloseFunction,
-            handleSaveCompromisso, marcadores } = this.props;
+            handleSaveCompromisso, marcadores, handleDeleteFunction } = this.props;
     const { compromisso } = this.state;
     return (
       <Modal isOpen={showModal} size="lg" toggle={handleCloseFunction}
@@ -71,6 +72,11 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
               </AvGroup>
             </ModalBody>
             <ModalFooter>
+              {handleDeleteFunction && !isNew ?
+                <Button type="button" onClick={handleDeleteFunction}>
+                  Excluir
+                </Button> : null
+              }
               <Button type="button" onClick={handleCloseFunction}>
                 Cancelar
               </Button>
