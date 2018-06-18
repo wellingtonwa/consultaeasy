@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Translate } from 'react-jhipster';
 import { AvForm, AvInput, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
 import { Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { getCompromisso, updateCompromisso, createCompromisso } from '../../../reducers/compromisso-management';
 import SelectMarcadorCompromisso from './partial/select-marcador';
 import {Button} from "primereact/components/button/Button";
 
@@ -43,7 +42,7 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
               {!isNew
                 ? <AvGroup>
                   <Label for="id"><Translate contentKey="global.field.id">ID</Translate></Label>
-                  <AvInput type="text" className="form-control" name="id" required readOnly />
+                  <AvInput type="text" className="form-control" name="id" value={compromisso.id ? compromisso.id : ''} required readOnly />
                 </AvGroup>
                 : null
               }

@@ -10,7 +10,8 @@ export const ACTION_TYPES = {
   FETCH_COMPROMISSO:  'compromissoManagement/FETCH_COMPROMISSO',
   CREATE_COMPROMISSO: 'compromissoManagement/CREATE_COMPROMISSO',
   UPDATE_COMPROMISSO: 'compromissoManagement/UPDATE_COMPROMISSO',
-  DELETE_COMPROMISSO: 'compromissoManagement/DELETE_COMPROMISSO'
+  DELETE_COMPROMISSO: 'compromissoManagement/DELETE_COMPROMISSO',
+  ADD_COMPROMISSO: 'compromissoManagement/ADD_COMPROMISSO'
 };
 
 const initialState = {
@@ -21,6 +22,8 @@ const initialState = {
   updating: false,
   updateSuccess: false
 };
+
+export const apiUrl = '/api/compromisso';
 
 // Reducer
 export default (state = initialState, action) => {
@@ -81,12 +84,16 @@ export default (state = initialState, action) => {
         updateSuccess: true,
         compromisso: {}
       };
+    case ACTION_TYPES.ADD_COMPROMISSO:
+      return {
+        ...state,
+        compromisso: {start: action.payload},
+      };
     default:
       return state;
   }
 };
 
-const apiUrl = '/api/compromisso';
 // Actions
 export const getCompromissos: ICrudGetAction = (page, size, sort) => ({
   type: ACTION_TYPES.FETCH_COMPROMISSOS,
@@ -162,4 +169,11 @@ export const deleteCompromisso: ICrudDeleteAction = id => async dispatch => {
   });
   dispatch(getCompromissos());
   return result;
+};
+
+export const addCompromisso = (startDate) => dispatch => {
+  return dispatch({
+    type: ACTION_TYPES.ADD_COMPROMISSO,
+    payload: startDate
+           });
 };
