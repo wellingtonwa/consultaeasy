@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,7 +35,7 @@ public class CompromissoResource {
 
     private final Logger log = LoggerFactory.getLogger(CompromissoResource.class);
 
-    private CompromissoService compromissoService;
+    private final CompromissoService compromissoService;
 
     public CompromissoResource(CompromissoService compromissoService) {
         this.compromissoService = compromissoService;
@@ -68,5 +69,11 @@ public class CompromissoResource {
         .map(CompromissoDTO::new);
 
         return ResponseUtil.wrapOrNotFound(updatedCompromisso, HeaderUtil.createAlert("compromissoManagement.updated", compromissoDTO.getId().toString()));
+    }
+
+    @DeleteMapping("/compromisso/{id}")
+    public ResponseEntity<Void> deleteCompromisso(@PathVariable Long id){
+        compromissoService.deleteCompromisso(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "compromissoManagement.deleted", id.toString())).build();
     }
 }

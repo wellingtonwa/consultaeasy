@@ -54,11 +54,11 @@ public class CompromissoService {
     }
 
     public Compromisso createCompromisso(CompromissoDTO compromissoDTO){
-        return (Compromisso) this.compromissoRepository.save(this.getCompromissoFromDTO(compromissoDTO));
+        return (Compromisso) compromissoRepository.save(this.getCompromissoFromDTO(compromissoDTO));
     }
 
     public Page<Compromisso> getCompromissos(Pageable pageable) {
-        return this.compromissoRepository.getAllCompromissos(pageable);
+        return compromissoRepository.getCompromissosByCurrentUser(pageable);
     }
 
     public Optional<Compromisso> updateComprimisso(CompromissoDTO compromissoDTO){
@@ -81,6 +81,15 @@ public class CompromissoService {
 
     public Compromisso getCompromisso(Long idCompromisso){
         return compromissoRepository.getOne(idCompromisso);
+    }
+
+    public Boolean deleteCompromisso(Long id){
+        Optional<Compromisso> opCompromisso = compromissoRepository.getCompromissoByCurrentUser(id);
+        if(opCompromisso.isPresent()){
+            compromissoRepository.delete(opCompromisso.get());
+            return true;
+        }
+        return false;
     }
 
 }
