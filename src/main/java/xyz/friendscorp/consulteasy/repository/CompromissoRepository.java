@@ -19,7 +19,7 @@ public interface CompromissoRepository extends JpaRepository<Compromisso, Long> 
     @Query("SELECT c FROM Compromisso c JOIN c.user user WHERE user.login = ?#{principal.username}")
     Page<Compromisso> getCompromissosByCurrentUser(Pageable pageable);
 
-    @Query("SELECT C FROM Compromisso c JOIN c.user user WHERE user.login = ? #{principal.username} AND c.id = ?1")
+    @Query("SELECT c FROM Compromisso c JOIN c.user user WHERE c.id = ?1 AND user.login = ?#{principal.username}")
     Optional<Compromisso> getCompromissoByCurrentUser(Long id);
 
 

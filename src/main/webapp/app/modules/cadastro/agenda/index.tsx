@@ -8,6 +8,7 @@ const Routes = ({ match }) => (
         <Switch>
             <Route exact path={match.url} component={Agenda}/>
             <Route exact path={`${match.url}/:id/edit`} component={Agenda}/>
+            <Route exact path={`${match.url}/:id/delete`} component={Agenda}/>
         </Switch>
     </div>
 );

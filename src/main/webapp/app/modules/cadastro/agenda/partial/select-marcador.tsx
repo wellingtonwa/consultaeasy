@@ -5,10 +5,6 @@ const littleBox = { height: '30px', width: '30px' };
 
 export default class SelectMarcadorCompromisso extends React.Component<any, any> {
 
-    constructor(props) {
-        super(props);
-    }
-
     littleBox(marcador) {
         return(
             <div style={littleBox}>.</div>
@@ -37,7 +33,7 @@ export default class SelectMarcadorCompromisso extends React.Component<any, any>
         const marcadores = this.props.marcadores ? this.buildSelectItens(this.props.marcadores) : [];
         const { onChange, compromisso, panelClassName } = this.props;
         return(
-            <Dropdown value={compromisso.marcador} className={panelClassName} options={marcadores} style={{ width: '250px' }} 
+            <Dropdown value={compromisso.marcador} className={panelClassName} options={marcadores} style={{ width: '250px' }}
             itemTemplate={this.template} placeholder="Marcadores" onChange={onChange}/>
         );
     }

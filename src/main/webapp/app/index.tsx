@@ -11,6 +11,7 @@ import setupAxiosInterceptors from './config/axios-interceptor';
 import { clearAuthentication } from './reducers/authentication';
 import AppComponent from './app';
 import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/omega/theme.css';
 import * as $ from 'jquery';
 

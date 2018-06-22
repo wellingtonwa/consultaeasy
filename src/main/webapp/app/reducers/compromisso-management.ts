@@ -87,7 +87,7 @@ export default (state = initialState, action) => {
     case ACTION_TYPES.ADD_COMPROMISSO:
       return {
         ...state,
-        compromisso: {start: action.payload},
+        compromisso: { start: action.payload }
       };
     default:
       return state;
@@ -171,7 +171,20 @@ export const deleteCompromisso: ICrudDeleteAction = id => async dispatch => {
   return result;
 };
 
-export const addCompromisso = (startDate) => dispatch => {
+export const _deleteCompromisso: ICrudDeleteAction = id => dispatch => {
+  const requestUrl = `${apiUrl}/${id}`;
+  const result = dispatch({
+    type: ACTION_TYPES.DELETE_COMPROMISSO,
+    meta: {
+      successMessage: messages.DATA_DELETE_SUCCESS_ALERT,
+      errorMessage: messages.DATA_UPDATE_ERROR_ALERT
+    },
+    payload: axios.delete(requestUrl)
+  });
+  return result;
+};
+
+export const addCompromisso = startDate => dispatch => {
   return dispatch({
     type: ACTION_TYPES.ADD_COMPROMISSO,
     payload: startDate

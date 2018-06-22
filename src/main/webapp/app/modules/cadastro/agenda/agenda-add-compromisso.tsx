@@ -1,32 +1,45 @@
 import * as React from 'react';
 import { Translate } from 'react-jhipster';
 import { AvForm, AvInput, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
-import { Label, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Label, Modal, ModalHeader, ModalBody, ModalFooter, Button, Input } from 'reactstrap';
 import SelectMarcadorCompromisso from './partial/select-marcador';
-import {Button} from "primereact/components/button/Button";
-
 
 export class AgendaAddCompromisso extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
     this.state = { compromisso: props.compromisso };
-  };
+  }
 
   componentWillReceiveProps(next) {
     const { compromisso } = next;
     this.setState({ compromisso });
-  };
+  }
 
   onChangeMarcador = event => {
     const { compromisso } = this.state;
     compromisso.marcador = event.value;
     this.setState({ compromisso });
-  };
+  }
+
+  pacientesDropDown = () => {
+    const { pacientes, loadingPacientes } = this.props;
+    console.log(">>>>>", pacientes, loadingPacientes);
+    if (loadingPacientes || !pacientes) {
+      return <div>Carregando...</div>;
+    }
+    return <AvGroup>
+      <Label for="paciente">Paciente</Label>
+      <Input type="select" name="paciente">
+        <option key="paciente0">Selecione um paciente</option>
+      {pacientes.map(e => <option key={e.id}>{e.nomeCompleto}</option>)}
+      </Input>
+    </AvGroup>;
+  }
 
   render() {
     const { loading, isNew, showModal, handleCloseFunction,
-            handleSaveCompromisso, marcadores, handleDeleteFunction } = this.props;
+            handleSaveCompromisso, marcadores, handleDeleteFunction} = this.props;
     const { compromisso } = this.state;
     return (
       <Modal isOpen={showModal} size="lg" toggle={handleCloseFunction}
@@ -55,6 +68,7 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
                 <Label for="descricao"><Translate contentKey="compromissoManagement.descricao">Descricao</Translate></Label>
                 <AvInput name="descricao" className="form-control" value={compromisso.descricao ? compromisso.descricao : ''} />
               </AvGroup>
+              {this.pacientesDropDown()}
               <AvGroup>
                 <Label for="start"><Translate contentKey="compromissoManagement.dataInicio">First Name</Translate></Label>
                 <AvInput type="datetime-local" className="form-control" value={compromisso.start ? compromisso.start : ''} name="start" required />
@@ -71,17 +85,17 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
               </AvGroup>
             </ModalBody>
             <ModalFooter>
-              {handleDeleteFunction && !isNew ?
-                <Button type="button" onClick={handleDeleteFunction}>
-                  Excluir
-                </Button> : null
-              }
-              <Button type="button" onClick={handleCloseFunction}>
-                Cancelar
-              </Button>
-              <Button type="submit">
+              <Button color="primary" type="submit">
                 Salvar
               </Button>
+              <Button color="secondary" onClick={handleCloseFunction}>
+                Cancelar
+              </Button>
+              {handleDeleteFunction && !isNew ?
+                        <Button color="warning" onClick={handleDeleteFunction.bind(this, compromisso)}>
+                          Excluir
+                        </Button> : null
+              }
             </ModalFooter>
           </AvForm>}
       </Modal>
