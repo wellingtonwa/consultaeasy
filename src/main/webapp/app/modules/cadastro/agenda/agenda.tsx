@@ -89,7 +89,6 @@ export class Agenda extends React.Component<IAgendaProps> {
 
     handleOnEventClick = (...data) => {
         const compromisso = data[0].calEvent;
-        this.props.getCompromisso(compromisso.id);
         this.props.eventClick(false);
         this.props.history.push(`/cadastro/agenda/${compromisso.id}/edit/`);
     }
@@ -107,8 +106,8 @@ export class Agenda extends React.Component<IAgendaProps> {
               const marcador = this.props.marcadores.filter(marc => marc.id === values.marcador)[0];
               const compromissoDaAgenda = this.agenda.schedule.fullCalendar('clientEvents', this.props.compromisso.id)[0];
               Object.assign(compromissoDaAgenda, values);
-
               compromissoDaAgenda.backgroundColor = '#' + marcador.cor;
+              compromissoDaAgenda.paciente = values.paciente==="0" ? null : values.paciente;
               compromissoDaAgenda.title = values.title;
               this.agenda.schedule.fullCalendar('updateEvent', compromissoDaAgenda);
             }
@@ -137,9 +136,9 @@ export class Agenda extends React.Component<IAgendaProps> {
 
     handleEventDrop = (...data) => {
       const compromisso = this.ajustarInicioFimEvento(data[0].delta, data[0].event);
+      this.agenda.schedule.fullCalendar('updateEvent', compromisso[1]);
       // const compromisso = { title: ac.title, descricao: ac.descricao, start: ac.start, end: ac.end };
       this.props._updateCompromisso(compromisso[0]);
-      this.agenda.schedule.fullCalendar('updateEvent', compromisso[1]);
       // this.props.getCompromissos();
     }
 
@@ -198,26 +197,26 @@ export class Agenda extends React.Component<IAgendaProps> {
         return(
             <div>
               <div style={{ float: 'left', display: 'in-line' }}>
-                <Button onClick={this.addCompromisso}>
+                <Button color="primary" onClick={this.addCompromisso}>
                     Adicionar Compromisso
                 </Button>
-                <Button onClick={this.prev}>
+                <Button color="primary" onClick={this.prev}>
                     Anterior
                 </Button>
-                <Button onClick={this.next}>
+                <Button color="primary" onClick={this.next}>
                     Próximo
                 </Button>
               </div>
               <div style={{ float: 'right', display: 'in-line' }}>
-                <Button onClick={this.showAgendaMonth}>
+                <Button color="primary" onClick={this.showAgendaMonth}>
                   Mês
                 </Button>
-                <Button onClick={this.showAgendaWeek}>
+                <Button color="primary" onClick={this.showAgendaWeek}>
                   Semana
                 </Button>
               </div>
               <div style={{ clear: 'both' }}/>
-              <Schedule header={header} events={compromissos} onDayClick={this.handleOnDayClick} defaultView={defaultView}
+              <Schedule events={compromissos} onDayClick={this.handleOnDayClick} defaultView={defaultView}
               onEventClick={this.handleOnEventClick} onEventDrop={this.handleEventDrop}
               onEventResize={this.handleEventResizeStop} ref={input => this.agenda = input}/>
 

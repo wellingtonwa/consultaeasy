@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Translate } from 'react-jhipster';
-import { AvForm, AvInput, AvGroup, AvFeedback } from 'availity-reactstrap-validation';
+import { AvForm, AvInput, AvGroup, AvFeedback, AvField } from 'availity-reactstrap-validation';
 import { Label, Modal, ModalHeader, ModalBody, ModalFooter, Button, Input } from 'reactstrap';
 import SelectMarcadorCompromisso from './partial/select-marcador';
 
@@ -30,10 +30,10 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
     }
     return <AvGroup>
       <Label for="paciente">Paciente</Label>
-      <Input type="select" name="paciente">
-        <option key="paciente0">Selecione um paciente</option>
-      {pacientes.map(e => <option key={e.id}>{e.nomeCompleto}</option>)}
-      </Input>
+      <AvField type="select" name="paciente">
+        <option key="paciente0" value="0">Selecione um paciente</option>
+      {pacientes.map(e => <option key={e.id} value={e.id}>{e.nomeCompleto}</option>)}
+      </AvField>
     </AvGroup>;
   }
 

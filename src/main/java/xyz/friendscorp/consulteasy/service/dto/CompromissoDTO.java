@@ -51,7 +51,6 @@ public class CompromissoDTO {
         }
         if (compromisso.getPaciente() != null) {
             this.paciente = compromisso.getPaciente().getId();
-            this.title += compromisso.getPaciente().getNomeCompleto();
         }
     }
 

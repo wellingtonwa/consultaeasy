@@ -62,6 +62,7 @@ public class CompromissoService {
     }
 
     public Optional<Compromisso> updateComprimisso(CompromissoDTO compromissoDTO){
+        System.out.println(">>>>>> " + compromissoDTO);
         return Optional.of(compromissoRepository.getOne(compromissoDTO.getId()))
             .map(compromisso -> {
                 compromisso.setTitulo(compromissoDTO.getTitle());
@@ -72,8 +73,10 @@ public class CompromissoService {
                 if(compromissoDTO.getMarcador()!=null){
                     compromisso.setMarcador(marcadorRepository.getOne(compromissoDTO.getMarcador()));
                 }
-                if(compromissoDTO.getPaciente()!=null){
+                if(compromissoDTO.getPaciente()!=null && compromissoDTO.getPaciente()>0L){
                     compromisso.setPaciente(pacienteRepository.getOne(compromissoDTO.getPaciente()));
+                } else if(compromissoDTO.getPaciente()!=null && compromissoDTO.getPaciente()==0L){
+                    compromisso.setPaciente(null);
                 }
                 return compromisso;
             });
