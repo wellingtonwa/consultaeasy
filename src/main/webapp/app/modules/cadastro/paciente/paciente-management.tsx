@@ -10,6 +10,7 @@ import { APP_DATE_FORMAT, APP_ONLY_DATE_FORMAT } from '../../../config/constants
 
 export interface IPacienteManagementProps {
   getPacientes: ICrudGetAction;
+  loading: boolean;
   pacientes: any[];
   match: any;
 }
@@ -25,7 +26,12 @@ export class PacienteManagement extends React.Component<IPacienteManagementProps
   }
 
   render() {
-    const { pacientes, match } = this.props;
+    const { pacientes, match, loading } = this.props;
+    if (loading) {
+      return(
+        <div>Carregando...</div>
+      );
+    }
     return (
       <div>
         <h2>
@@ -101,6 +107,7 @@ export class PacienteManagement extends React.Component<IPacienteManagementProps
 
 const mapStateToProps = storeState => ({
   pacientes: storeState.pacienteManagement.pacientes,
+  loading: storeState.pacienteManagement.loading,
   account: storeState.authentication.account
 });
 

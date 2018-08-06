@@ -24,7 +24,6 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
 
   pacientesDropDown = () => {
     const { pacientes, loadingPacientes } = this.props;
-    console.log(">>>>>", pacientes, loadingPacientes);
     if (loadingPacientes || !pacientes) {
       return <div>Carregando...</div>;
     }

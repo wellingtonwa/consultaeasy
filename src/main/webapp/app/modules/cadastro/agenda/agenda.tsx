@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import { ICrudGetAction, ICrudPutAction, Translate } from 'react-jhipster';
 import {
   _updateCompromisso, createCompromisso, getCompromisso, getCompromissos,
-  updateCompromisso, addCompromisso, _deleteCompromisso
+  updateCompromisso, addCompromisso, _deleteCompromisso, setCompromisso
 } from '../../../reducers/compromisso-management';
 import {
   closeEditDialog, changeDefaultView, eventClick, changeDate,
@@ -28,6 +28,7 @@ export interface IAgendaProps {
     _updateCompromisso: ICrudPutAction;
     _deleteCompromisso: ICrudPutAction;
     getPacientes: ICrudGetAction;
+    setCompromisso: any;
     closeEditDialog: any;
     openEditDialog: any;
     closeDeleteDialog: any;
@@ -58,10 +59,14 @@ export class Agenda extends React.Component<IAgendaProps> {
 
     agenda;
 
+    constructor(props) {
+      super(props);
+      this.props.getCompromissos();
+      this.props.getMarcadores();
+      this.props.getPacientes();
+    }
+
     componentDidMount() {
-        this.props.getCompromissos();
-        this.props.getMarcadores();
-        this.props.getPacientes();
         this.checkUrl();
     }
 
@@ -89,6 +94,9 @@ export class Agenda extends React.Component<IAgendaProps> {
 
     handleOnEventClick = (...data) => {
         const compromisso = data[0].calEvent;
+        this.props.setCompromisso(compromisso);
+        compromisso.start = compromisso.start ? compromisso.start.format(FORMAT_EVENT_DATETIME) : null;
+        compromisso.end = compromisso.end ? compromisso.end.format(FORMAT_EVENT_DATETIME) : null;
         this.props.eventClick(false);
         this.props.history.push(`/cadastro/agenda/${compromisso.id}/edit/`);
     }
@@ -107,7 +115,7 @@ export class Agenda extends React.Component<IAgendaProps> {
               const compromissoDaAgenda = this.agenda.schedule.fullCalendar('clientEvents', this.props.compromisso.id)[0];
               Object.assign(compromissoDaAgenda, values);
               compromissoDaAgenda.backgroundColor = '#' + marcador.cor;
-              compromissoDaAgenda.paciente = values.paciente==="0" ? null : values.paciente;
+              compromissoDaAgenda.paciente = values.paciente === "0" ? null : values.paciente;
               compromissoDaAgenda.title = values.title;
               this.agenda.schedule.fullCalendar('updateEvent', compromissoDaAgenda);
             }
@@ -148,7 +156,6 @@ export class Agenda extends React.Component<IAgendaProps> {
 
     openDeleteDialog = (comp, e) => {
       this.props.history.push(`/cadastro/agenda/${comp.id}/delete/`);
-      this.props.getCompromisso(comp.id);
       this.props.closeEditDialog();
       this.props.openDeleteDialog();
     }
@@ -252,8 +259,8 @@ const mapStateToProps = storeState => ({
 
 const mapDispatchToProps = {
   getCompromissos, getCompromisso, createCompromisso, _updateCompromisso, getMarcadores,
-  updateCompromisso, _deleteCompromisso,  closeEditDialog, changeDefaultView, eventClick, addCompromisso,
-  changeDate, openDeleteDialog, closeDeleteDialog, getPacientes
+  updateCompromisso, _deleteCompromisso, closeEditDialog, changeDefaultView, eventClick, addCompromisso,
+  changeDate, openDeleteDialog, closeDeleteDialog, getPacientes, setCompromisso
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Agenda);

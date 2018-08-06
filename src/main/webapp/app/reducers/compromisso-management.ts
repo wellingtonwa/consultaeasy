@@ -11,7 +11,8 @@ export const ACTION_TYPES = {
   CREATE_COMPROMISSO: 'compromissoManagement/CREATE_COMPROMISSO',
   UPDATE_COMPROMISSO: 'compromissoManagement/UPDATE_COMPROMISSO',
   DELETE_COMPROMISSO: 'compromissoManagement/DELETE_COMPROMISSO',
-  ADD_COMPROMISSO: 'compromissoManagement/ADD_COMPROMISSO'
+  ADD_COMPROMISSO: 'compromissoManagement/ADD_COMPROMISSO',
+  SET_COMPROMISSO: 'compromissoManagement/SET_COMPROMISSO'
 };
 
 const initialState = {
@@ -88,6 +89,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         compromisso: { start: action.payload }
+      };
+    case ACTION_TYPES.SET_COMPROMISSO:
+      return {
+        ...state,
+        compromisso: action.payload
       };
     default:
       return state;
@@ -188,5 +194,12 @@ export const addCompromisso = startDate => dispatch => {
   return dispatch({
     type: ACTION_TYPES.ADD_COMPROMISSO,
     payload: startDate
+           });
+};
+
+export const setCompromisso = compromisso => dispatch => {
+  return dispatch({
+    type: ACTION_TYPES.SET_COMPROMISSO,
+    payload: compromisso
            });
 };

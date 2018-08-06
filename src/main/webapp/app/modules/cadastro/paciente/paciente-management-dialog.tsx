@@ -62,10 +62,6 @@ export class PacienteManagementDialog extends React.Component<IPacienteManagemen
     } else {
       this.setState({ paciente: {} });
     }
-    if (this.state.firstField) {
-      console.log(this.state.firstField);
-      console.log(this.state.firstField.props.tag.focus);
-    }
     this.atualizarContatos();
   }
 
