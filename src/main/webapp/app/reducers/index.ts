@@ -11,6 +11,7 @@ import marcadorManagement from './marcador-management';
 import contatoManagement from './contato-management';
 import compromissoManagement from './compromisso-management';
 import agendaManagement from './agenda-management';
+import listaCompromissoManagement from './lista-compromisso-management';
 
 export default combineReducers({
   authentication,
@@ -23,5 +24,6 @@ export default combineReducers({
   marcadorManagement,
   contatoManagement,
   compromissoManagement,
-  agendaManagement
+  agendaManagement,
+  listaCompromissoManagement
 });

@@ -2,8 +2,10 @@ package xyz.friendscorp.consulteasy.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -15,13 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import io.github.jhipster.web.util.ResponseUtil;
 import xyz.friendscorp.consulteasy.domain.Compromisso;
@@ -75,5 +71,12 @@ public class CompromissoResource {
     public ResponseEntity<Void> deleteCompromisso(@PathVariable Long id){
         compromissoService.deleteCompromisso(id);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "compromissoManagement.deleted", id.toString())).build();
+    }
+
+    @GetMapping("/compromisso/listView")
+    public ResponseEntity<List<CompromissoDTO>> getCompromissoByData(Pageable pageable, @RequestParam Instant data){
+        List<CompromissoDTO> listCompromisso = compromissoService.getCompromissosByDataInicio(pageable, data)
+            .getContent().stream().map(CompromissoDTO::new).collect(Collectors.toList());
+        return new ResponseEntity<>(listCompromisso, HttpStatus.OK);
     }
 }

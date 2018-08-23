@@ -108,6 +108,9 @@ export class Header extends React.Component<IHeaderProps, { menuOpen: boolean }>
                     <span>Cadastros</span>
                   </DropdownToggle>
                   <DropdownMenu right>
+                    <DropdownItem tag={Link} to="/cadastro/lista-compromisso">
+                      Lista Compromisso
+                    </DropdownItem>
                     <DropdownItem tag={Link} to="/cadastro/agenda">
                       Agenda
                     </DropdownItem>

@@ -1,6 +1,9 @@
 package xyz.friendscorp.consulteasy.service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -93,6 +96,16 @@ public class CompromissoService {
             return true;
         }
         return false;
+    }
+
+    public Page<Compromisso> getCompromissosByDataInicio(Pageable pageable, Instant dataInicio) {
+        Instant dataHoraInicio = LocalDateTime.ofInstant(dataInicio, ZoneOffset.ofHours(0))
+            .withHour(0).withMinute(0).withSecond(0).atZone(ZoneOffset.ofHours(0)).toInstant();
+        Instant dataHoraFim = LocalDateTime.ofInstant(dataInicio, ZoneOffset.ofHours(0))
+            .withHour(23).withMinute(59).withSecond(59).atZone(ZoneOffset.ofHours(0)).toInstant();
+        System.out.println(dataHoraInicio);
+        System.out.println(dataHoraFim);
+        return compromissoRepository.getCompromissosByDataInicio(pageable, dataHoraInicio, dataHoraFim);
     }
 
 }

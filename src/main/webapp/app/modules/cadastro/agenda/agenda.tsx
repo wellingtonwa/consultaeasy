@@ -18,7 +18,7 @@ import { getMarcadores } from '../../../reducers/marcador-management';
 import { AgendaAddCompromisso } from './agenda-add-compromisso';
 import { AgendaDelCompromisso } from './agenda-del-compromisso';
 import { Button } from 'reactstrap';
-import 'fullcalendar/dist/locale/pt-br.js';
+    import 'fullcalendar/dist/locale/pt-br.js';
 
 export interface IAgendaProps {
     getCompromissos: ICrudGetAction;

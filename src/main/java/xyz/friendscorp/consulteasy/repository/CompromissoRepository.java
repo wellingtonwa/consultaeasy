@@ -1,5 +1,6 @@
 package xyz.friendscorp.consulteasy.repository;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -21,6 +22,9 @@ public interface CompromissoRepository extends JpaRepository<Compromisso, Long> 
 
     @Query("SELECT c FROM Compromisso c JOIN c.user user WHERE c.id = ?1 AND user.login = ?#{principal.username}")
     Optional<Compromisso> getCompromissoByCurrentUser(Long id);
+
+    @Query("SELECT c FROM Compromisso c JOIN c.user user WHERE c.inicio >= ?1 AND c.inicio <= ?2 AND user.login = ?#{principal.username}")
+    Page<Compromisso> getCompromissosByDataInicio(Pageable pageable, Instant dataInicio, Instant dataFim);
 
 
 
