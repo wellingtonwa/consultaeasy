@@ -3,14 +3,16 @@ import { ICrudGetAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipste
 
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
 import { messages } from '../config/constants';
-import { request } from 'https';
+import { FORMAT_EVENT_DATETIME } from '../modules/cadastro/agenda/agenda';
+import moment from 'moment/src/moment';
 
 export const ACTION_TYPES = {
   FETCH_COMPROMISSOS: 'listaCompromissoManagement/FETCH_COMPROMISSOS',
   FETCH_COMPROMISSO:  'listaCompromissoManagement/FETCH_COMPROMISSO',
   CREATE_COMPROMISSO: 'listaCompromissoManagement/CREATE_COMPROMISSO',
   UPDATE_COMPROMISSO: 'listaCompromissoManagement/UPDATE_COMPROMISSO',
-  DELETE_COMPROMISSO: 'listaCompromissoManagement/DELETE_COMPROMISSO'
+  DELETE_COMPROMISSO: 'listaCompromissoManagement/DELETE_COMPROMISSO',
+  CHANGE_DATE: 'listaCompromissoManagement/CHANGE_DATE'
 };
 
 const initialState = {
@@ -84,16 +86,24 @@ export default (state = initialState, action) => {
         updateSuccess: true,
         compromisso: {}
       };
+    case ACTION_TYPES.CHANGE_DATE:
+      return {
+        ...state,
+        data: action.payload.date
+      };
     default:
       return state;
   }
 };
 
 // Actions
-export const getCompromissos: ICrudGetAction = (page, size, sort) => ({
-  type: ACTION_TYPES.FETCH_COMPROMISSOS,
-  payload: axios.get(`${apiUrl}?cacheBuster=${new Date().getTime()}`)
-});
+export const getCompromissos: ICrudGetAction = (page, size, sort, data) => {
+  const auxData = moment(data).format(FORMAT_EVENT_DATETIME);
+  return ({
+    type: ACTION_TYPES.FETCH_COMPROMISSOS,
+    payload: axios.get(`${apiUrl}?cacheBuster=${new Date().getTime()}&data=${auxData}`)
+  });
+};
 
 export const getCompromisso: ICrudGetAction = id => {
   const requestUrl = `${apiUrl}/${id}`;
@@ -177,4 +187,11 @@ export const _deleteCompromisso: ICrudDeleteAction = id => dispatch => {
     payload: axios.delete(requestUrl)
   });
   return result;
+};
+
+export const changeDate = date => dispatch => {
+  return dispatch ({
+    type: ACTION_TYPES.CHANGE_DATE,
+    payload: { date }
+  })
 };

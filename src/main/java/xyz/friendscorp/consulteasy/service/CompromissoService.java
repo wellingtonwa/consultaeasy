@@ -98,13 +98,11 @@ public class CompromissoService {
         return false;
     }
 
-    public Page<Compromisso> getCompromissosByDataInicio(Pageable pageable, Instant dataInicio) {
-        Instant dataHoraInicio = LocalDateTime.ofInstant(dataInicio, ZoneOffset.ofHours(0))
-            .withHour(0).withMinute(0).withSecond(0).atZone(ZoneOffset.ofHours(0)).toInstant();
-        Instant dataHoraFim = LocalDateTime.ofInstant(dataInicio, ZoneOffset.ofHours(0))
-            .withHour(23).withMinute(59).withSecond(59).atZone(ZoneOffset.ofHours(0)).toInstant();
-        System.out.println(dataHoraInicio);
-        System.out.println(dataHoraFim);
+    public Page<Compromisso> getCompromissosByDataInicio(Pageable pageable, LocalDateTime dataInicio) {
+        Instant dataHoraInicio = dataInicio.withHour(0).withMinute(0).withSecond(0)
+            .atZone(ZoneOffset.ofHours(0)).toInstant();
+        Instant dataHoraFim = dataInicio.withHour(23).withMinute(59).withSecond(59)
+            .atZone(ZoneOffset.ofHours(0)).toInstant();
         return compromissoRepository.getCompromissosByDataInicio(pageable, dataHoraInicio, dataHoraFim);
     }
 

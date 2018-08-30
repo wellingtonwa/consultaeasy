@@ -3,6 +3,7 @@ package xyz.friendscorp.consulteasy.web.rest;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ import io.github.jhipster.web.util.ResponseUtil;
 import xyz.friendscorp.consulteasy.domain.Compromisso;
 import xyz.friendscorp.consulteasy.service.CompromissoService;
 import xyz.friendscorp.consulteasy.service.dto.CompromissoDTO;
+import xyz.friendscorp.consulteasy.service.dto.ListaCompromissoDTO;
 import xyz.friendscorp.consulteasy.web.rest.util.HeaderUtil;
 
 @Controller
@@ -74,9 +76,9 @@ public class CompromissoResource {
     }
 
     @GetMapping("/compromisso/listView")
-    public ResponseEntity<List<CompromissoDTO>> getCompromissoByData(Pageable pageable, @RequestParam Instant data){
-        List<CompromissoDTO> listCompromisso = compromissoService.getCompromissosByDataInicio(pageable, data)
-            .getContent().stream().map(CompromissoDTO::new).collect(Collectors.toList());
+    public ResponseEntity<List<ListaCompromissoDTO>> getCompromissoByData(Pageable pageable, @RequestParam(required = false) Optional<LocalDateTime> data){
+        List<ListaCompromissoDTO> listCompromisso = compromissoService.getCompromissosByDataInicio(pageable, data.orElse(LocalDateTime.now()))
+            .getContent().stream().map(ListaCompromissoDTO::new).collect(Collectors.toList());
         return new ResponseEntity<>(listCompromisso, HttpStatus.OK);
     }
 }
