@@ -12,6 +12,8 @@ export const ACTION_TYPES = {
   CREATE_COMPROMISSO: 'listaCompromissoManagement/CREATE_COMPROMISSO',
   UPDATE_COMPROMISSO: 'listaCompromissoManagement/UPDATE_COMPROMISSO',
   DELETE_COMPROMISSO: 'listaCompromissoManagement/DELETE_COMPROMISSO',
+  SHOW_COMPROMISSO_DIALOG: 'listaCompromissoManagement/SHOW_COMPROMISSO_DIALOG',
+  SET_IS_NEW: 'listaCompromissoManagement/SET_IS_NEW',
   CHANGE_DATE: 'listaCompromissoManagement/CHANGE_DATE'
 };
 
@@ -22,7 +24,9 @@ const initialState = {
   compromissos: [],
   compromisso: {},
   updating: false,
-  updateSuccess: false
+  updateSuccess: false,
+  isNew: false,
+  showAddCompromissoDialog: false
 };
 
 export const apiUrl = '/api/compromisso/listView';
@@ -90,6 +94,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         data: action.payload.date
+      };
+    case ACTION_TYPES.SHOW_COMPROMISSO_DIALOG:
+      return {
+        ...state,
+        showAddCompromissoDialog: action.payload.show
+      };
+    case ACTION_TYPES.SET_IS_NEW:
+      return {
+        ...state,
+        isNew: action.payload.isNew
       };
     default:
       return state;
@@ -193,5 +207,19 @@ export const changeDate = date => dispatch => {
   return dispatch ({
     type: ACTION_TYPES.CHANGE_DATE,
     payload: { date }
+  })
+};
+
+export const showCompromissoDialog = show => dispatch => {
+  return dispatch ({
+    type: ACTION_TYPES.SHOW_COMPROMISSO_DIALOG,
+    payload: { show }
+  })
+};
+
+export const setIsNew = isNew => dispatch => {
+  return dispatch ({
+    type: ACTION_TYPES.SET_IS_NEW,
+    payload: { isNew }
   })
 };

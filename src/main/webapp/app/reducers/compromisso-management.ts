@@ -4,9 +4,13 @@ import { ICrudGetAction, ICrudPutAction, ICrudDeleteAction } from 'react-jhipste
 import { REQUEST, SUCCESS, FAILURE } from './action-type.util';
 import { messages } from '../config/constants';
 import { request } from 'https';
+import moment from 'moment/src/moment';
+
+const FORMAT_EVENT_DATETIME = 'YYYY-MM-DD[T]HH:mm';
 
 export const ACTION_TYPES = {
   FETCH_COMPROMISSOS: 'compromissoManagement/FETCH_COMPROMISSOS',
+  FETCH_COMPROMISSOS_BY_DATA: 'compromissoManagement/FETCH_COMPROMISSOS_BY_DATA',
   FETCH_COMPROMISSO:  'compromissoManagement/FETCH_COMPROMISSO',
   CREATE_COMPROMISSO: 'compromissoManagement/CREATE_COMPROMISSO',
   UPDATE_COMPROMISSO: 'compromissoManagement/UPDATE_COMPROMISSO',
@@ -31,6 +35,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case REQUEST(ACTION_TYPES.FETCH_COMPROMISSOS):
     case REQUEST(ACTION_TYPES.FETCH_COMPROMISSO):
+    case REQUEST(ACTION_TYPES.FETCH_COMPROMISSOS_BY_DATA):
       return {
         ...state,
         errorMessage: null,
@@ -48,6 +53,7 @@ export default (state = initialState, action) => {
       };
     case FAILURE(ACTION_TYPES.FETCH_COMPROMISSOS):
     case FAILURE(ACTION_TYPES.FETCH_COMPROMISSO):
+    case FAILURE(ACTION_TYPES.FETCH_COMPROMISSOS_BY_DATA):
     case FAILURE(ACTION_TYPES.CREATE_COMPROMISSO):
     case FAILURE(ACTION_TYPES.UPDATE_COMPROMISSO):
     case FAILURE(ACTION_TYPES.DELETE_COMPROMISSO):
@@ -59,6 +65,7 @@ export default (state = initialState, action) => {
         errorMessage: action.payload
       };
     case SUCCESS(ACTION_TYPES.FETCH_COMPROMISSOS):
+    case SUCCESS(ACTION_TYPES.FETCH_COMPROMISSOS_BY_DATA):
       return {
         ...state,
         loading: false,
@@ -114,7 +121,7 @@ export const getCompromisso: ICrudGetAction = id => {
   };
 };
 
-export const createCompromisso: ICrudPutAction = compromisso => async dispatch => {
+export const createCompromisso: ICrudPutAction = (compromisso, data=null) => async dispatch => {
   const result = await dispatch({
     type: ACTION_TYPES.CREATE_COMPROMISSO,
     meta: {
@@ -123,10 +130,14 @@ export const createCompromisso: ICrudPutAction = compromisso => async dispatch =
     },
     payload: axios.post(apiUrl, compromisso)
   });
-  dispatch(getCompromissos());
+  if (data) {
+    dispatch(getCompromissosByData(null, null, null, data))
+  } else {
+    dispatch(getCompromissos());
+  }
   return result;
 };
-export const _createCompromisso: ICrudPutAction = compromisso => dispatch => {
+export const _createCompromisso: ICrudPutAction = (compromisso) => dispatch => {
   const result = dispatch({
     type: ACTION_TYPES.CREATE_COMPROMISSO,
     meta: {
@@ -138,7 +149,7 @@ export const _createCompromisso: ICrudPutAction = compromisso => dispatch => {
   return result;
 };
 
-export const updateCompromisso: ICrudPutAction = compromisso => async dispatch => {
+export const updateCompromisso: ICrudPutAction = (compromisso, data=null) => async dispatch => {
   const result = await dispatch({
     type: ACTION_TYPES.UPDATE_COMPROMISSO,
     meta: {
@@ -147,11 +158,15 @@ export const updateCompromisso: ICrudPutAction = compromisso => async dispatch =
     },
     payload: axios.put(apiUrl, compromisso)
   });
-  dispatch(getCompromissos());
+  if (data) {
+    dispatch(getCompromissosByData(null, null, null, data))
+  } else {
+    dispatch(getCompromissos());
+  }
   return result;
 };
 
-export const _updateCompromisso: ICrudPutAction = compromisso => dispatch => {
+export const _updateCompromisso: ICrudPutAction = (compromisso) => dispatch => {
   const result = dispatch({
     type: ACTION_TYPES.UPDATE_COMPROMISSO,
     meta: {
@@ -202,4 +217,12 @@ export const setCompromisso = compromisso => dispatch => {
     type: ACTION_TYPES.SET_COMPROMISSO,
     payload: compromisso
            });
+};
+
+export const getCompromissosByData: ICrudGetAction = (page, size, sort, data) => {
+  const auxData = moment(data).format(FORMAT_EVENT_DATETIME);
+  return ({
+    type: ACTION_TYPES.FETCH_COMPROMISSOS_BY_DATA,
+    payload: axios.get(`${apiUrl}/listView?cacheBuster=${new Date().getTime()}&data=${auxData}`)
+  });
 };
