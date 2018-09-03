@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { changeDate, showCompromissoDialog, setIsNew } from "../../../reducers/lista-compromisso-management";
 import { getPacientes } from "../../../reducers/paciente-management";
 import { getMarcadores } from "../../../reducers/marcador-management";
-import { addCompromisso, updateCompromisso, createCompromisso, getCompromissosByData } from "../../../reducers/compromisso-management";
+import { addCompromisso, updateCompromisso, createCompromisso, getCompromissosByData, getCompromisso } from "../../../reducers/compromisso-management";
 import { Calendar } from "primereact/components/calendar/Calendar";
 import { Button } from "primereact/components/button/Button";
 import { AgendaAddCompromisso } from "../agenda/agenda-add-compromisso";
@@ -13,6 +13,7 @@ import moment from 'moment/src/moment';
 export interface IListaCompromissoProps {
   createCompromisso: ICrudPutAction;
   updateCompromisso: ICrudPutAction;
+  getCompromisso: ICrudGetAction;
   getCompromissosByData: ICrudGetAction;
   getPacientes: ICrudGetAction;
   getMarcadores: ICrudGetAction;
@@ -53,6 +54,13 @@ export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
     this.props.showCompromissoDialog(true);
   };
 
+  openEditDialog = ( idCompromisso , event) => {
+    console.log(event, idCompromisso);
+    this.props.getCompromisso(idCompromisso);
+    this.props.setIsNew(false);
+    this.props.showCompromissoDialog(true);
+  }
+
   closeCompromissoDialog = () => {
     this.props.showCompromissoDialog(false);
   };
@@ -76,10 +84,11 @@ export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
             <div>Início: {moment(compromissoAgenda.start).format(VIEW_EVENT_DATETIME)}</div>
             {compromissoAgenda.marcador ? <div>
                 <div style={ {float: 'left'} }>Marcador: {compromissoAgenda.marcador.nome}</div>
-                <div style={ {float: 'right', height: 25, width: 25, backgroundColor: cor} }>&nbsp;</div>
+                <div style={ {float: 'left', marginLeft: 5, marginRight:5, height: 25, width: 25, backgroundColor: cor} }>&nbsp;</div>
+                <div style={ { clear: 'both' } } ></div>
               </div> : null}
             {compromissoAgenda.paciente ? <div>Paciente: {compromissoAgenda.paciente.nomeCompleto}</div> : null}
-            <Button label={'Editar'} icon={'pi pi-pencil'}/>
+            <Button label={'Editar'} icon={'pi pi-pencil'} onClick={this.openEditDialog.bind(event, compromissoAgenda.id)}/>
           </div>
         </div>
       })}
@@ -131,6 +140,7 @@ const mapStateToProps =  storeState => ({
 
 const mapDispatchToProps = {
   getCompromissosByData,
+  getCompromisso,
   updateCompromisso,
   createCompromisso,
   getMarcadores,
