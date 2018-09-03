@@ -31,6 +31,7 @@ export interface IListaCompromissoProps {
 }
 
 export const FORMAT_EVENT_DATETIME = 'YYYY-MM-DD[T]HH:mm';
+export const VIEW_EVENT_DATETIME = 'DD-MM-YYYY HH:mm';
 
 export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
 
@@ -66,35 +67,41 @@ export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
 
   carregarLista = compromissos => {
     if(compromissos && compromissos.length > 0) {
-      return <div className={ 'ui-g' }> { compromissos.map(compromissoAgenda =>
-        <div key={ compromissoAgenda.id } className={ 'ui-lg-3 ui-md-6 ui-g-12 card' } style={ {margin: 5} }>
-          <div className={ 'card-body' }>
-            <h5 className={ 'card-title' }>Título: { compromissoAgenda.title }</h5>
-            <div>Descrição: { compromissoAgenda.descricao }</div>
-            <div>Início: { compromissoAgenda.start }</div>
-            {compromissoAgenda.marcador ? <div style={ { color: `#${ compromissoAgenda.marcador.cor }` } }>Marcador: { compromissoAgenda.marcador.nome }</div> : null }
-            {compromissoAgenda.paciente ? <div>Paciente: { compromissoAgenda.paciente.nomeCompleto }</div> : null }
+      return <div className={ 'ui-g' }> { compromissos.map(compromissoAgenda => {
+        var cor = compromissoAgenda.marcador ? `#${compromissoAgenda.marcador.cor}` : '#FFFFFF';
+        return <div key={compromissoAgenda.id} className={'ui-lg-4 ui-md-6 ui-g-12 card'} style={{margin: 5}}>
+          <div className={'card-body'}>
+            <h5 className={'card-title'}>Título: {compromissoAgenda.title}</h5>
+            <div>Descrição: {compromissoAgenda.descricao}</div>
+            <div>Início: {moment(compromissoAgenda.start).format(VIEW_EVENT_DATETIME)}</div>
+            {compromissoAgenda.marcador ? <div>
+                <div style={ {float: 'left'} }>Marcador: {compromissoAgenda.marcador.nome}</div>
+                <div style={ {float: 'right', height: 25, width: 25, backgroundColor: cor} }>&nbsp;</div>
+              </div> : null}
+            {compromissoAgenda.paciente ? <div>Paciente: {compromissoAgenda.paciente.nomeCompleto}</div> : null}
+            <Button label={'Editar'} icon={'pi pi-pencil'}/>
           </div>
         </div>
-        )}
+      })}
       </div>
     } else {
-
       return <div>Nenhum compromisso encontrado</div>
     }
   };
 
 
   render() {
-    const { data, compromissos, loading, addCompromissoDlg, compromisso, pacientes, isNew } = this.props;
+    const { data, compromissos, loading, addCompromissoDlg, compromisso
+      , pacientes, isNew, marcadores } = this.props;
+
     return (
       <div>
         <div className={ 'card' }>
           <div className={ 'card-body ui-g-nopad' } style={ { marginBottom:10} }>
-            <div className={ 'ui-g-12 ui-md-6 ui-lg-3'}>
+            <div className={ 'ui-g-12 ui-md-6 ui-lg-4'}>
               Data Atual: <Calendar value={ data } dateFormat={'dd/mm/yy'} onChange={(e) => this.changeDate(e)}/>
             </div>
-            <div className={ 'ui-g-12 ui-md-6 ui-lg-3'} >
+            <div className={ 'ui-g-12 ui-md-6 ui-lg-4'} >
               <Button label={ 'Compromisso' } icon={ 'pi pi-plus' } onClick={ this.openCompromissoDialog }/>
             </div>
           </div>
@@ -104,7 +111,7 @@ export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
            {this.carregarLista(compromissos)}
          </div>}
          <AgendaAddCompromisso showModal={ addCompromissoDlg } handleCloseFunction={ this.closeCompromissoDialog } compromisso={ compromisso } pacientes={ pacientes }
-                               handleSaveCompromisso={ this.saveCompromisso } isNew={ isNew }/>
+                               handleSaveCompromisso={ this.saveCompromisso } isNew={ isNew } marcadores={ marcadores }/>
       </div>
     );
   }
@@ -116,7 +123,7 @@ const mapStateToProps =  storeState => ({
   compromisso: storeState.compromissoManagement.compromisso,
   addCompromissoDlg: storeState.listaCompromissoManagement.showAddCompromissoDialog,
   pacientes: storeState.pacienteManagement.pacientes,
-  marcadores: storeState.pacienteManagement.marcadores,
+  marcadores: storeState.marcadorManagement.marcadores,
   data: storeState.listaCompromissoManagement.data,
   isNew: storeState.listaCompromissoManagement.isNew,
   loading: storeState.compromissoManagement.loading
