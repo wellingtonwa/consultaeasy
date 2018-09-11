@@ -41,7 +41,7 @@ public class CompromissoService {
     public Compromisso getCompromissoFromDTO(CompromissoDTO compromissoDTO){
         Paciente paciente = null;
         Marcador marcador = null;
-        if(compromissoDTO.getPaciente()!=null)
+        if(compromissoDTO.getPaciente()!=null && compromissoDTO.getPaciente()!=0)
             paciente = pacienteRepository.getOne(compromissoDTO.getPaciente());
         if(compromissoDTO.getMarcador()!=null)
             marcador = marcadorRepository.getOne(compromissoDTO.getMarcador());

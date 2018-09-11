@@ -9,6 +9,7 @@ import { Calendar } from "primereact/components/calendar/Calendar";
 import { Button } from "primereact/components/button/Button";
 import { AgendaAddCompromisso } from "../agenda/agenda-add-compromisso";
 import moment from 'moment/src/moment';
+import { ptBR } from "../../../shared/layout/location/location";
 
 export interface IListaCompromissoProps {
   createCompromisso: ICrudPutAction;
@@ -66,10 +67,11 @@ export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
   };
 
   saveCompromisso = (event, errors, values) => {
+
+    console.log(event, errors, values)
     if (errors.length === 0) {
-      values.id ? this.props.updateCompromisso(values) : this.props.createCompromisso(values, this.props.data);
+      values.id ? this.props.updateCompromisso(values, this.props.data) : this.props.createCompromisso(values, this.props.data);
       this.closeCompromissoDialog();
-      this.props.getCompromissosByData(null,null,null,this.props.data);
     }
   };
 
@@ -79,9 +81,12 @@ export class ListaCompromisso extends React.Component<IListaCompromissoProps>{
         var cor = compromissoAgenda.marcador ? `#${compromissoAgenda.marcador.cor}` : '#FFFFFF';
         return <div key={compromissoAgenda.id} className={'ui-lg-4 ui-md-6 ui-g-12 card'} style={{margin: 5}}>
           <div className={'card-body'}>
-            <h5 className={'card-title'}>Título: {compromissoAgenda.title}</h5>
+            <h5 className={'card-title'}>Títulos: {compromissoAgenda.title}</h5>
             <div>Descrição: {compromissoAgenda.descricao}</div>
             <div>Início: {moment(compromissoAgenda.start).format(VIEW_EVENT_DATETIME)}</div>
+            {compromissoAgenda.end ? <div>
+              Término: {moment(compromissoAgenda.end).format(VIEW_EVENT_DATETIME)}
+            </div> : null}
             {compromissoAgenda.marcador ? <div>
                 <div style={ {float: 'left'} }>Marcador: {compromissoAgenda.marcador.nome}</div>
                 <div style={ {float: 'left', marginLeft: 5, marginRight:5, height: 25, width: 25, backgroundColor: cor} }>&nbsp;</div>

@@ -3,12 +3,19 @@ import { Translate } from 'react-jhipster';
 import { AvForm, AvInput, AvGroup, AvFeedback, AvField } from 'availity-reactstrap-validation';
 import { Label, Modal, ModalHeader, ModalBody, ModalFooter, Button, Input } from 'reactstrap';
 import SelectMarcadorCompromisso from './partial/select-marcador';
+import {Calendar} from "primereact/components/calendar/Calendar";
+import {ptBR} from "../../../shared/layout/location/location";
+import {InputText} from "primereact/components/inputtext/InputText";
 
 export class AgendaAddCompromisso extends React.Component<any, any> {
 
   constructor(props) {
     super(props);
-    this.state = { compromisso: props.compromisso };
+    this.state = { compromisso: props.compromisso, id:undefined, title:undefined, start: undefined, end: undefined };
+  }
+
+  prepareToSave = () => {
+    this.props.handleSaveCompromisso(null, [], this.state.compromisso);
   }
 
   componentWillReceiveProps(next) {
@@ -19,6 +26,12 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
   onChangeMarcador = event => {
     const { compromisso } = this.state;
     compromisso.marcador = event.value;
+    this.setState({ compromisso });
+  }
+
+  onChangeAttr = (event, attr) => {
+    const { compromisso } = this.state;
+    compromisso[attr] = event.target.value;
     this.setState({ compromisso });
   }
 
@@ -49,39 +62,34 @@ export class AgendaAddCompromisso extends React.Component<any, any> {
           </Translate>
         </ModalHeader>
         {loading ? <span>carregando...</span>
-          : <AvForm model={isNew ? {} : compromisso} onSubmit={handleSaveCompromisso}>
+          : <AvForm model={isNew ? {} : compromisso} onSubmit={this.prepareToSave}>
             <ModalBody>
+              <div className={ 'pui-fluid' }>
               {!isNew
-                ? <AvGroup>
-                  <Label for="id"><Translate contentKey="global.field.id">ID</Translate></Label>
-                  <AvInput type="text" className="form-control" name="id" value={compromisso.id ? compromisso.id : ''} required readOnly />
-                </AvGroup>
+                ? <div className={ 'ui-g-12 ui-g-nopad' }>
+                    <div className={ 'ui-g-12 ui-g-nopad' }><Translate contentKey="global.field.id">ID</Translate></div>
+                    <div className={ 'ui-g-12 ui-g-nopad' }><InputText className={ 'ui-g-12' } name="id" value={compromisso.id ? compromisso.id : ''} onChange={this.onChangeAttr.bind("id", event)}/></div>
+                  </div>
                 : null
               }
-              <AvGroup>
-                <Label for="title"><Translate contentKey="compromissoManagement.titulo">Título</Translate></Label>
-                <AvInput name="title" className="form-control" value={compromisso.title ? compromisso.title : ''} autoFocus required />
-                <AvFeedback>Este campo é obrigatório</AvFeedback>
-              </AvGroup>
-              <AvGroup>
-                <Label for="descricao"><Translate contentKey="compromissoManagement.descricao">Descricao</Translate></Label>
-                <AvInput name="descricao" className="form-control" value={compromisso.descricao ? compromisso.descricao : ''} />
-              </AvGroup>
+                <div className={ 'ui-g-12 ui-g-nopad' }><Translate contentKey="compromissoManagement.titulo">Título</Translate></div>
+                <div className={ 'ui-g-12 ui-g-nopad' }><InputText name="title" className={'ui-g-12'} value={compromisso.title ? compromisso.title : ''}  onChange={(event) => this.onChangeAttr(event, "title")} /></div>
+
+                <div className={ 'ui-g-12 ui-g-nopad' }><Translate contentKey="compromissoManagement.descricao">Descricao</Translate></div>
+                <div className={ 'ui-g-12 ui-g-nopad' }><InputText className={ 'ui-g-12' } name="descricao" value={compromisso.descricao ? compromisso.descricao : ''} onChange={(event) => this.onChangeAttr(event, "descricao")}/></div>
               {this.pacientesDropDown()}
-              <AvGroup>
-                <Label for="start"><Translate contentKey="compromissoManagement.dataInicio">First Name</Translate></Label>
-                <AvInput type="datetime-local" className="form-control" value={compromisso.start ? compromisso.start : ''} name="start" required />
-                <AvFeedback>Este campo é obrigatório</AvFeedback>
-              </AvGroup>
-              <AvGroup>
-                <Label for="end"><Translate contentKey="compromissoManagement.dataTermino">First Name</Translate></Label>
-                <AvInput type="datetime-local" className="form-control" value={compromisso.end ? compromisso.end : ''} name="end" />
-              </AvGroup>
+                <div className={ 'ui-g-12 ui-g-nopad' }><Translate contentKey="compromissoManagement.dataInicio">First Name</Translate></div>
+                <div className={ 'ui-g-12 ui-g-nopad' }><AvInput type="datetime-local" className="form-control" value={compromisso.start ? compromisso.start : ''} name="start"  onChange={(event) => this.onChangeAttr(event, "start")} /></div>
+
+                <div className={ 'ui-g-12 ui-g-nopad' }><Translate contentKey="compromissoManagement.dataTermino">First Name</Translate></div>
+                <div className={ 'ui-g-12 ui-g-nopad' }><AvInput type="datetime-local" className="form-control" value={compromisso.end ? compromisso.end : ''} name="end"  onChange={(event) => this.onChangeAttr(event, "end")} /></div>
+                {/*<AvInput type="datetime-local" className="form-control" value={compromisso.end ? compromisso.end : ''} name="end" />*/}
               <AvGroup>
                 <Label for="marcador"><Translate contentKey="compromissoManagement.marcador">First Name</Translate></Label>
                 <AvInput type="hidden" name="marcador" value={compromisso.marcador}/><br/>
                 <SelectMarcadorCompromisso panelClassName="form-control" marcadores={marcadores} compromisso={compromisso} onChange={this.onChangeMarcador}/>
               </AvGroup>
+              </div>
             </ModalBody>
             <ModalFooter>
               <Button color="primary" type="submit">
