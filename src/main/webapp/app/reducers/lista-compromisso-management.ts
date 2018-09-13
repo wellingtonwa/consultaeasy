@@ -14,11 +14,15 @@ export const ACTION_TYPES = {
   DELETE_COMPROMISSO: 'listaCompromissoManagement/DELETE_COMPROMISSO',
   SHOW_COMPROMISSO_DIALOG: 'listaCompromissoManagement/SHOW_COMPROMISSO_DIALOG',
   SET_IS_NEW: 'listaCompromissoManagement/SET_IS_NEW',
-  CHANGE_DATE: 'listaCompromissoManagement/CHANGE_DATE'
+  CHANGE_DATE: 'listaCompromissoManagement/CHANGE_DATE',
+  CHANGE_DATA_TERMINO: 'listaCompromissoManagement/CHANGE_DATA_TERMINO',
+  CLOSE_DELETE_DIALOG: 'listaCompromissoManagement/CLOSE_DELETE_DIALOG',
+  OPEN_DELETE_DIALOG: 'listaCompromissoManagement/OPEN_DELETE_DIALOG'
 };
 
 const initialState = {
-  data: new Date(),
+  data: moment().day(1).toDate(),
+  dataTermino: moment().day(7).toDate(),
   loading: false,
   errorMessage: null,
   compromissos: [],
@@ -26,7 +30,8 @@ const initialState = {
   updating: false,
   updateSuccess: false,
   isNew: false,
-  showAddCompromissoDialog: false
+  showAddCompromissoDialog: false,
+  showDeleteDialog: false
 };
 
 export const apiUrl = '/api/compromisso/listView';
@@ -95,6 +100,11 @@ export default (state = initialState, action) => {
         ...state,
         data: action.payload.date
       };
+    case ACTION_TYPES.CHANGE_DATA_TERMINO:
+      return {
+        ...state,
+        dataTermino: action.payload.date
+      };
     case ACTION_TYPES.SHOW_COMPROMISSO_DIALOG:
       return {
         ...state,
@@ -104,6 +114,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isNew: action.payload.isNew
+      };
+    case ACTION_TYPES.OPEN_DELETE_DIALOG:
+      return {
+        ...state,
+        showDeleteDialog: true
+      };
+    case ACTION_TYPES.CLOSE_DELETE_DIALOG:
+      return {
+        ...state,
+        showDeleteDialog: false
       };
     default:
       return state;
@@ -210,6 +230,13 @@ export const changeDate = date => dispatch => {
   })
 };
 
+export const changeDataTermino = date => dispatch => {
+  return dispatch ({
+    type: ACTION_TYPES.CHANGE_DATA_TERMINO,
+    payload: { date }
+  })
+};
+
 export const showCompromissoDialog = show => dispatch => {
   return dispatch ({
     type: ACTION_TYPES.SHOW_COMPROMISSO_DIALOG,
@@ -223,3 +250,15 @@ export const setIsNew = isNew => dispatch => {
     payload: { isNew }
   })
 };
+
+export const openDeleteDialog = () => dispatch => {
+  return dispatch ({
+    type: ACTION_TYPES.OPEN_DELETE_DIALOG
+  })
+}
+
+export const closeDeleteDialog = () => dispatch => {
+  return dispatch ({
+    type: ACTION_TYPES.CLOSE_DELETE_DIALOG
+  })
+}

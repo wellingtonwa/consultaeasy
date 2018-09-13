@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,9 +77,18 @@ public class CompromissoResource {
     }
 
     @GetMapping("/compromisso/listView")
-    public ResponseEntity<List<ListaCompromissoDTO>> getCompromissoByData(Pageable pageable, @RequestParam(required = false) Optional<LocalDateTime> data){
-        List<ListaCompromissoDTO> listCompromisso = compromissoService.getCompromissosByDataInicio(pageable, data.orElse(LocalDateTime.now()))
-            .getContent().stream().map(ListaCompromissoDTO::new).collect(Collectors.toList());
+    public ResponseEntity<List<ListaCompromissoDTO>> getCompromissoByData(Pageable pageable, @RequestParam(required = false) Optional<LocalDateTime> data,
+                                                                          @RequestParam(required = false) Optional<LocalDateTime> dataTermino){
+        List<ListaCompromissoDTO> listCompromisso = new ArrayList<>(0);
+
+        if(!dataTermino.isPresent()) {
+            listCompromisso = compromissoService.getCompromissosByDataInicio(pageable, data.orElse(LocalDateTime.now()))
+                .getContent().stream().map(ListaCompromissoDTO::new).collect(Collectors.toList());
+        } else {
+            listCompromisso = compromissoService.getCompromissosByDataInicioDataTermino(pageable, data.orElse(LocalDateTime.now()),
+                dataTermino.orElse(LocalDateTime.now().plusDays(7l)))
+                .getContent().stream().map(ListaCompromissoDTO::new).collect(Collectors.toList());
+        }
         return new ResponseEntity<>(listCompromisso, HttpStatus.OK);
     }
 }

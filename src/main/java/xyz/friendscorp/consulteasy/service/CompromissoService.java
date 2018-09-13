@@ -106,4 +106,12 @@ public class CompromissoService {
         return compromissoRepository.getCompromissosByDataInicio(pageable, dataHoraInicio, dataHoraFim);
     }
 
+    public Page<Compromisso> getCompromissosByDataInicioDataTermino(Pageable pageable, LocalDateTime dataInicio, LocalDateTime dataTermino) {
+        Instant dataHoraInicio = dataInicio.withHour(0).withMinute(0).withSecond(0)
+            .atZone(ZoneOffset.ofHours(0)).toInstant();
+        Instant dataHoraFim = dataTermino.withHour(23).withMinute(59).withSecond(59)
+            .atZone(ZoneOffset.ofHours(0)).toInstant();
+        return compromissoRepository.getCompromissosByDataInicio(pageable, dataHoraInicio, dataHoraFim);
+    }
+
 }

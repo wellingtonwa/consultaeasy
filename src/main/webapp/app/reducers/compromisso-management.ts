@@ -108,7 +108,7 @@ export default (state = initialState, action) => {
 };
 
 // Actions
-export const getCompromissos: ICrudGetAction = (page, size, sort) => ({
+export const  getCompromissos: ICrudGetAction = (page, size, sort) => ({
   type: ACTION_TYPES.FETCH_COMPROMISSOS,
   payload: axios.get(`${apiUrl}?cacheBuster=${new Date().getTime()}`)
 });
@@ -121,7 +121,7 @@ export const getCompromisso: ICrudGetAction = id => {
   };
 };
 
-export const createCompromisso: ICrudPutAction = (compromisso, data=null) => async dispatch => {
+export const createCompromisso: ICrudPutAction = (compromisso, data=null, dataTermino=null) => async dispatch => {
   const result = await dispatch({
     type: ACTION_TYPES.CREATE_COMPROMISSO,
     meta: {
@@ -130,9 +130,11 @@ export const createCompromisso: ICrudPutAction = (compromisso, data=null) => asy
     },
     payload: axios.post(apiUrl, compromisso)
   });
-  if (data) {
+  if(data && dataTermino) {
+    dispatch(getCompromissosByDataInicioTermino(null, null, null, data, dataTermino));
+  } else if(data) {
     dispatch(getCompromissosByData(null, null, null, data))
-  } else {
+  }  else {
     dispatch(getCompromissos());
   }
   return result;
@@ -149,7 +151,7 @@ export const _createCompromisso: ICrudPutAction = (compromisso) => dispatch => {
   return result;
 };
 
-export const updateCompromisso: ICrudPutAction = (compromisso, data=null) => async dispatch => {
+export const updateCompromisso: ICrudPutAction = (compromisso, data=null, dataTermino=null) => async dispatch => {
   const result = await dispatch({
     type: ACTION_TYPES.UPDATE_COMPROMISSO,
     meta: {
@@ -158,7 +160,10 @@ export const updateCompromisso: ICrudPutAction = (compromisso, data=null) => asy
     },
     payload: axios.put(apiUrl, compromisso)
   });
-  if (data) {
+
+  if(data && dataTermino) {
+    dispatch(getCompromissosByDataInicioTermino(null, null, null, data, dataTermino));
+  } else if(data) {
     dispatch(getCompromissosByData(null, null, null, data))
   } else {
     dispatch(getCompromissos());
@@ -178,7 +183,7 @@ export const _updateCompromisso: ICrudPutAction = (compromisso) => dispatch => {
   return result;
 };
 
-export const deleteCompromisso: ICrudDeleteAction = id => async dispatch => {
+export const deleteCompromisso: ICrudDeleteAction = (id, data=null, dataTermino=null) => async dispatch => {
   const requestUrl = `${apiUrl}/${id}`;
   const result = await dispatch({
     type: ACTION_TYPES.DELETE_COMPROMISSO,
@@ -188,7 +193,14 @@ export const deleteCompromisso: ICrudDeleteAction = id => async dispatch => {
     },
     payload: axios.delete(requestUrl)
   });
-  dispatch(getCompromissos());
+  if(data && dataTermino) {
+    dispatch(getCompromissosByDataInicioTermino(null, null, null, data, dataTermino));
+  } else if(data) {
+    dispatch(getCompromissosByData(null, null, null, data))
+  }
+  else {
+    dispatch(getCompromissos());
+  }
   return result;
 };
 
@@ -209,7 +221,7 @@ export const addCompromisso = startDate => dispatch => {
   return dispatch({
     type: ACTION_TYPES.ADD_COMPROMISSO,
     payload: startDate
-           });
+  });
 };
 
 export const setCompromisso = compromisso => dispatch => {
@@ -224,5 +236,14 @@ export const getCompromissosByData: ICrudGetAction = (page, size, sort, data) =>
   return ({
     type: ACTION_TYPES.FETCH_COMPROMISSOS_BY_DATA,
     payload: axios.get(`${apiUrl}/listView?cacheBuster=${new Date().getTime()}&data=${auxData}`)
+  });
+};
+
+export const getCompromissosByDataInicioTermino: ICrudGetAction = (page, size, sort, data, dataTermino) => {
+  const auxData = moment(data).format(FORMAT_EVENT_DATETIME);
+  const auxDataTermino = moment(dataTermino).format(FORMAT_EVENT_DATETIME);
+  return ({
+    type: ACTION_TYPES.FETCH_COMPROMISSOS_BY_DATA,
+    payload: axios.get(`${apiUrl}/listView?cacheBuster=${new Date().getTime()}&data=${auxData}&dataTermino=${auxDataTermino}`)
   });
 };
